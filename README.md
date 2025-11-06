@@ -2,10 +2,25 @@
 
 ## Overview
 
+> ⚠️ **UFG TCC adaptation:** This repository extends the public work available at [github.com/RodSalg/remote-laboratory](https://github.com/RodSalg/remote-laboratory).  
+> The entire codebase, folder naming and original scripts remain credited to the authors of that project; the changes documented here are exclusive to the capstone requirements at Universidade Federal de Goiás (UFG).
+
+---
+
+## Adaptations for the TCC project
+
+- `bot/readfiles.py`: CLI helper that scans every `.csv` located in the project root and prints each file as a formatted text table (normalizes column sizes, pads spacing, and keeps headers aligned). Run `python bot/readfiles.py` to inspect collected datasets directly from the terminal.
+
+---
+
+## Remote Laboratory
+
 The **Remote Laboratory** project provides a robust and automated system for **collecting**, **saving**, and **organizing** data from a Siemens PLC via the Snap7 communication protocol.  
 The collected data is processed in real time, stored both in text/CSV files, and inserted into a structured **MySQL database** for further analysis.
 
 The system is designed to facilitate experiments in mechatronics and automation laboratories, especially for pattern detection based on pulse trains.
+
+This fork customizes configuration, documentation and helper scripts for the UFG capstone without altering the original ownership of the core solution.
 
 ---
 
@@ -108,6 +123,21 @@ You need to run the SQL scripts inside the `database-scripts/` folder to create 
 - The generated `.txt` and `.csv` files are saved with automatic **version control** (`v1`, `v2`, etc.).
 - The database connection parameters (host, database, user, password) are configured inside the `RemoteLaboratoryDAO` class.
 - This project is modular and ready for expansion (for example: adding OPC UA or Profinet acquisitions).
+
+---
+
+## Credits & Attribution
+
+- Original project: [Remote Laboratory – PLC Data Acquisition System](https://github.com/RodSalg/remote-laboratory) (rod-salgado and collaborators).  
+- UFG capstone adjustments: documentation notes, utility scripts and data structures tailored to the academic context.
+
+---
+
+## Team
+
+- Rodrigo Ferraz Azevedo  
+- Guido Machado  
+- Marcelo Marcomini
 
 ---
 
