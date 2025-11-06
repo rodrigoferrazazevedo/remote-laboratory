@@ -15,7 +15,7 @@ class RemoteLaboratoryDAO:
                 host='localhost',
                 database='cae_dr',
                 user='root',
-                password='1234')
+                password='')
 
             return mydb
 
@@ -189,7 +189,7 @@ class RemoteLaboratoryDAO:
                 host='localhost',
                 database='cae_dr',
                 user='root',
-                password='1234'
+                password=''
             )
             cursor = mydb.cursor(dictionary=True)
             sql = "SELECT * FROM plant_config WHERE experiment_name = %s"
@@ -210,7 +210,7 @@ class RemoteLaboratoryDAO:
                 host='localhost',
                 database='cae_dr',
                 user='root',
-                password='1234'
+                password=''
             )
             cursor = mydb.cursor()
             cursor.execute("SELECT experiment_name FROM plant_config ORDER BY experiment_name ASC")

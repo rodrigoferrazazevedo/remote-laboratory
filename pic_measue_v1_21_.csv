@@ -1,0 +1,15 @@
+Passo,Step,Valor do Passo,Duracao (s),Timestamp
+0,"[True, False, True, False, False, True, False, False]",164,2.2693145275115967,1752540192.6920683
+1,"[False, False, True, False, False, True, False, False]",36,1.133277416229248,1752540193.8253458
+2,"[False, True, True, False, False, True, False, True]",101,8.368587017059326,1752540202.1939328
+3,"[False, True, False, False, False, True, False, True]",69,0.1340482234954834,1752540202.327981
+4,"[False, True, False, True, True, False, False, True]",89,0.8322699069976807,1752540203.160251
+5,"[False, False, False, True, True, False, False, True]",25,0.13307929039001465,1752540203.2933302
+6,"[True, False, False, True, True, False, True, False]",154,4.645421981811523,1752540207.9387522
+7,"[True, False, False, False, True, False, True, False]",138,0.19672703742980957,1752540208.1354792
+8,"[True, False, True, False, True, False, True, False]",170,1.5647895336151123,1752540209.7002687
+9,"[True, False, True, False, False, True, False, False]",164,0.001994609832763672,1752540209.7022634
+10,"[False, False, True, False, False, True, False, False]",36,1.1643378734588623,1752540210.8666012
+11,"[False, False, True, False, False, False, False, False]",32,6.6219353675842285,1752540217.4885366
+12,"[False, True, True, False, False, False, False, False]",96,1.9573917388916016,1752540219.4459283
+13,"[False, True, True, False, False, False, False, False]",96,30.001564979553223,1752540249.4474933

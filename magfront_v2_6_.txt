@@ -1,0 +1,10 @@
+IOs: ['in1', 'in2', 'in3', 'in4', 'in5', 'out1', 'out2', 'out3']
+Passo0: [False, True, False, False, False, True, True, False] | Valor do passo: 70 | Duracao (s): 13.358 | timestamp: 1751930732.4698365
+IOs: ['in1', 'in2', 'in3', 'in4', 'in5', 'out1', 'out2', 'out3']
+Passo1: [False, False, False, False, False, True, True, False] | Valor do passo: 6 | Duracao (s): 0.009 | timestamp: 1751930732.4785402
+IOs: ['in1', 'in2', 'in3', 'in4', 'in5', 'out1', 'out2', 'out3']
+Passo2: [False, True, False, False, False, True, True, False] | Valor do passo: 70 | Duracao (s): 0.198 | timestamp: 1751930732.676042
+IOs: ['in1', 'in2', 'in3', 'in4', 'in5', 'out1', 'out2', 'out3']
+Passo3: [False, False, False, False, False, True, True, False] | Valor do passo: 6 | Duracao (s): 0.364 | timestamp: 1751930733.0398204
+IOs: ['in1', 'in2', 'in3', 'in4', 'in5', 'out1', 'out2', 'out3']
+Passo4: [False, False, False, False, False, True, True, False] | Valor do passo: 6 | Duracao (s): 30.000 | timestamp: 1751930763.0402699

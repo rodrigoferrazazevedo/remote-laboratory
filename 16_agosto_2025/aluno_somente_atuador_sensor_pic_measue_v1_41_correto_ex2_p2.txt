@@ -1,0 +1,478 @@
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo0: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 7.789 | timestamp: 1755377846.3294997
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo1: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 1.983 | timestamp: 1755377848.312053
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo2: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.149 | timestamp: 1755377848.4612627
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo3: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.838 | timestamp: 1755377849.2992845
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo4: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.072 | timestamp: 1755377849.37173
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo5: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.751 | timestamp: 1755377850.1237469
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo6: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.140 | timestamp: 1755377850.262362
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo7: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.938 | timestamp: 1755377851.200511
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo8: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.211 | timestamp: 1755377851.4122627
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo9: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.060 | timestamp: 1755377853.4717643
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo10: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.120 | timestamp: 1755377853.59207
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo11: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.879 | timestamp: 1755377854.4705927
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo12: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.076 | timestamp: 1755377854.5470777
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo13: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.766 | timestamp: 1755377855.3128862
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo14: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.137 | timestamp: 1755377855.4499443
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo15: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.964 | timestamp: 1755377856.4143374
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo16: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.212 | timestamp: 1755377856.6259263
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo17: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.072 | timestamp: 1755377858.6975353
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo18: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.122 | timestamp: 1755377858.8192303
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo19: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.892 | timestamp: 1755377859.7116308
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo20: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.078 | timestamp: 1755377859.7897677
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo21: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.768 | timestamp: 1755377860.5589442
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo22: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.139 | timestamp: 1755377860.696995
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo23: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.969 | timestamp: 1755377861.6658497
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo24: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.214 | timestamp: 1755377861.8802037
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo25: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.077 | timestamp: 1755377863.9571533
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo26: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.119 | timestamp: 1755377864.0761006
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo27: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.898 | timestamp: 1755377864.9740198
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo28: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.077 | timestamp: 1755377865.0519714
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo29: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.772 | timestamp: 1755377865.822623
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo30: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.137 | timestamp: 1755377865.9599707
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo31: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.974 | timestamp: 1755377866.934112
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo32: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.216 | timestamp: 1755377867.1497262
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo33: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.077 | timestamp: 1755377869.2273474
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo34: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.123 | timestamp: 1755377869.349426
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo35: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.892 | timestamp: 1755377870.2418327
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo36: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.078 | timestamp: 1755377870.3198812
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo37: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.771 | timestamp: 1755377871.090837
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo38: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.139 | timestamp: 1755377871.2296185
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo39: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.977 | timestamp: 1755377872.2073767
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo40: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.214 | timestamp: 1755377872.4208941
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo41: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.087 | timestamp: 1755377874.5084908
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo42: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.118 | timestamp: 1755377874.6257083
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo43: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.906 | timestamp: 1755377875.5323584
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo44: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.078 | timestamp: 1755377875.6093788
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo45: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.771 | timestamp: 1755377876.3802593
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo46: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.140 | timestamp: 1755377876.5211174
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo47: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.978 | timestamp: 1755377877.4979904
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo48: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.214 | timestamp: 1755377877.711842
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo49: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.088 | timestamp: 1755377879.8000233
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo50: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.123 | timestamp: 1755377879.922998
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo51: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.907 | timestamp: 1755377880.8310275
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo52: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.077 | timestamp: 1755377880.907556
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo53: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.772 | timestamp: 1755377881.6796896
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo54: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.141 | timestamp: 1755377881.8202698
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo55: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.984 | timestamp: 1755377882.8048198
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo56: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.214 | timestamp: 1755377883.0179987
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo57: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.094 | timestamp: 1755377885.1125572
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo58: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.123 | timestamp: 1755377885.2349205
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo59: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.901 | timestamp: 1755377886.136001
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo60: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.076 | timestamp: 1755377886.2115479
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo61: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.776 | timestamp: 1755377886.987435
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo62: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.138 | timestamp: 1755377887.124955
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo63: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.983 | timestamp: 1755377888.1083415
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo64: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.216 | timestamp: 1755377888.3245049
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo65: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.096 | timestamp: 1755377890.4206476
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo66: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.120 | timestamp: 1755377890.541974
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo67: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.910 | timestamp: 1755377891.451029
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo68: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.079 | timestamp: 1755377891.5296214
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo69: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.777 | timestamp: 1755377892.3079588
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo70: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.138 | timestamp: 1755377892.4454849
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo71: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.985 | timestamp: 1755377893.4306734
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo72: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.218 | timestamp: 1755377893.648324
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo73: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.104 | timestamp: 1755377895.7524235
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo74: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.121 | timestamp: 1755377895.8748555
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo75: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.912 | timestamp: 1755377896.7863789
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo76: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.078 | timestamp: 1755377896.8641033
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo77: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.778 | timestamp: 1755377897.641806
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo78: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.139 | timestamp: 1755377897.781254
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo79: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.997 | timestamp: 1755377898.7778435
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo80: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.207 | timestamp: 1755377898.9847715
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo81: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.107 | timestamp: 1755377901.0916345
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo82: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.122 | timestamp: 1755377901.2133408
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo83: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.914 | timestamp: 1755377902.1269562
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo84: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.078 | timestamp: 1755377902.2053027
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo85: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.777 | timestamp: 1755377902.9816446
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo86: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.140 | timestamp: 1755377903.1220868
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo87: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.988 | timestamp: 1755377904.11035
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo88: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.217 | timestamp: 1755377904.3268895
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo89: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.115 | timestamp: 1755377906.4415593
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo90: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.123 | timestamp: 1755377906.5644627
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo91: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.909 | timestamp: 1755377907.473258
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo92: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.077 | timestamp: 1755377907.5500486
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo93: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.779 | timestamp: 1755377908.3290725
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo94: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.142 | timestamp: 1755377908.4713256
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo95: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.991 | timestamp: 1755377909.4627583
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo96: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.214 | timestamp: 1755377909.6781237
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo97: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.117 | timestamp: 1755377911.794629
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo98: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.123 | timestamp: 1755377911.9172978
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo99: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.918 | timestamp: 1755377912.8349316
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo100: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.077 | timestamp: 1755377912.9115002
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo101: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.782 | timestamp: 1755377913.6932757
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo102: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.137 | timestamp: 1755377913.8317006
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo103: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.992 | timestamp: 1755377914.824075
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo104: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.219 | timestamp: 1755377915.0422938
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo105: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.119 | timestamp: 1755377917.1613076
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo106: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.123 | timestamp: 1755377917.2851079
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo107: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.913 | timestamp: 1755377918.1969676
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo108: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.078 | timestamp: 1755377918.2749796
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo109: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.780 | timestamp: 1755377919.0546849
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo110: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.140 | timestamp: 1755377919.1950645
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo111: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.995 | timestamp: 1755377920.1903803
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo112: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.219 | timestamp: 1755377920.409376
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo113: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.122 | timestamp: 1755377922.5316484
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo114: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.141 | timestamp: 1755377922.6726253
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo115: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.897 | timestamp: 1755377923.5691845
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo116: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.079 | timestamp: 1755377923.6477966
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo117: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.781 | timestamp: 1755377924.428756
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo118: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.140 | timestamp: 1755377924.568708
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo119: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.997 | timestamp: 1755377925.5660353
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo120: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.216 | timestamp: 1755377925.7825134
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo121: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.128 | timestamp: 1755377927.9102213
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo122: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.125 | timestamp: 1755377928.0348246
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo123: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.914 | timestamp: 1755377928.9487083
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo124: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.079 | timestamp: 1755377929.0289018
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo125: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.781 | timestamp: 1755377929.809154
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo126: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.139 | timestamp: 1755377929.9485872
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo127: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.997 | timestamp: 1755377930.945184
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo128: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.219 | timestamp: 1755377931.1655655
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo129: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.128 | timestamp: 1755377933.2940574
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo130: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.124 | timestamp: 1755377933.4167335
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo131: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.925 | timestamp: 1755377934.3432004
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo132: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.069 | timestamp: 1755377934.4111714
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo133: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.781 | timestamp: 1755377935.1924217
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo134: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.141 | timestamp: 1755377935.3330598
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo135: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.996 | timestamp: 1755377936.3304684
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo136: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.218 | timestamp: 1755377936.548015
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo137: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.128 | timestamp: 1755377938.6753376
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo138: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.123 | timestamp: 1755377938.7982597
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo139: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.922 | timestamp: 1755377939.719981
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo140: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.079 | timestamp: 1755377939.7988017
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo141: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.782 | timestamp: 1755377940.5815442
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo142: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.138 | timestamp: 1755377940.7187328
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo143: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.999 | timestamp: 1755377941.7173698
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo144: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.218 | timestamp: 1755377941.9350293
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo145: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.135 | timestamp: 1755377944.0704563
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo146: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.123 | timestamp: 1755377944.1930668
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo147: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.922 | timestamp: 1755377945.1152668
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo148: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.076 | timestamp: 1755377945.1917078
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo149: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.785 | timestamp: 1755377945.976213
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo150: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.137 | timestamp: 1755377946.1141858
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo151: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 1.004 | timestamp: 1755377947.11717
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo152: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.216 | timestamp: 1755377947.333351
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo153: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.140 | timestamp: 1755377949.4731913
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo154: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.120 | timestamp: 1755377949.593615
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo155: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.922 | timestamp: 1755377950.515862
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo156: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.078 | timestamp: 1755377950.5938203
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo157: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.781 | timestamp: 1755377951.3747368
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo158: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.141 | timestamp: 1755377951.516076
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo159: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 1.002 | timestamp: 1755377952.5185406
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo160: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.220 | timestamp: 1755377952.7372534
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo161: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.139 | timestamp: 1755377954.876293
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo162: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.122 | timestamp: 1755377954.999433
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo163: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.923 | timestamp: 1755377955.9218495
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo164: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.077 | timestamp: 1755377955.999017
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo165: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.785 | timestamp: 1755377956.7841518
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo166: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.139 | timestamp: 1755377956.9230282
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo167: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 1.003 | timestamp: 1755377957.9261463
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo168: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.218 | timestamp: 1755377958.144113
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo169: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.149 | timestamp: 1755377960.293507
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo170: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.125 | timestamp: 1755377960.4180396
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo171: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.924 | timestamp: 1755377961.3418026
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo172: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.078 | timestamp: 1755377961.4199283
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo173: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.785 | timestamp: 1755377962.2061884
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo174: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.139 | timestamp: 1755377962.3454595
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo175: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 1.004 | timestamp: 1755377963.3485234
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo176: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.220 | timestamp: 1755377963.5683718
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo177: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.150 | timestamp: 1755377965.7180753
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo178: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.123 | timestamp: 1755377965.840874
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo179: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.927 | timestamp: 1755377966.767737
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo180: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.077 | timestamp: 1755377966.8451114
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo181: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.786 | timestamp: 1755377967.632012
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo182: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.141 | timestamp: 1755377967.7725503
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo183: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 1.005 | timestamp: 1755377968.7774355
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo184: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.221 | timestamp: 1755377968.9987662
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo185: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.147 | timestamp: 1755377971.1456056
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo186: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.124 | timestamp: 1755377971.270571
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo187: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.924 | timestamp: 1755377972.1949906
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo188: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.079 | timestamp: 1755377972.2732959
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo189: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.786 | timestamp: 1755377973.0588982
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo190: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.141 | timestamp: 1755377973.1995862
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo191: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 1.005 | timestamp: 1755377974.2047532
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo192: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.220 | timestamp: 1755377974.4250286
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo193: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.156 | timestamp: 1755377976.5808358
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo194: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.123 | timestamp: 1755377976.7040544
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo195: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.928 | timestamp: 1755377977.6345227
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo196: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.080 | timestamp: 1755377977.712276
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo197: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.787 | timestamp: 1755377978.4996178
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo198: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.141 | timestamp: 1755377978.6406589
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo199: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 1.007 | timestamp: 1755377979.6478505
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo200: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.220 | timestamp: 1755377979.8675933
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo201: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.156 | timestamp: 1755377982.0236387
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo202: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.124 | timestamp: 1755377982.1476595
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo203: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.931 | timestamp: 1755377983.0786068
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo204: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.079 | timestamp: 1755377983.157396
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo205: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.788 | timestamp: 1755377983.945997
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo206: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.140 | timestamp: 1755377984.0854099
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo207: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 1.008 | timestamp: 1755377985.0934
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo208: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.220 | timestamp: 1755377985.3137715
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo209: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.168 | timestamp: 1755377987.481452
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo210: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.124 | timestamp: 1755377987.6062822
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo211: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.931 | timestamp: 1755377988.5368676
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo212: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.078 | timestamp: 1755377988.6151948
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo213: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.790 | timestamp: 1755377989.405989
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo214: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.151 | timestamp: 1755377989.5563056
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo215: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 0.997 | timestamp: 1755377990.5536058
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo216: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.223 | timestamp: 1755377990.7770164
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo217: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.165 | timestamp: 1755377992.9423692
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo218: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.125 | timestamp: 1755377993.066907
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo219: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.933 | timestamp: 1755377994.0001168
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo220: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.077 | timestamp: 1755377994.0772178
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo221: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.789 | timestamp: 1755377994.8666422
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo222: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.140 | timestamp: 1755377995.0063105
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo223: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 1.016 | timestamp: 1755377996.0220487
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo224: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.217 | timestamp: 1755377996.2388346
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo225: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.173 | timestamp: 1755377998.411432
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo226: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.124 | timestamp: 1755377998.5351388
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo227: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.933 | timestamp: 1755377999.4681885
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo228: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.077 | timestamp: 1755377999.5450482
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo229: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.792 | timestamp: 1755378000.3372054
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo230: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 0.140 | timestamp: 1755378000.4773345
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo231: [True, False, True, False] | Valor do passo: 10 | Duracao (s): 1.011 | timestamp: 1755378001.4889627
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo232: [False, False, True, False] | Valor do passo: 2 | Duracao (s): 0.223 | timestamp: 1755378001.7120252
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo233: [False, True, True, False] | Valor do passo: 6 | Duracao (s): 2.169 | timestamp: 1755378003.8797672
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo234: [False, True, False, False] | Valor do passo: 4 | Duracao (s): 0.125 | timestamp: 1755378004.0045373
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo235: [False, True, False, True] | Valor do passo: 5 | Duracao (s): 0.940 | timestamp: 1755378004.9448018
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo236: [False, False, False, True] | Valor do passo: 1 | Duracao (s): 0.071 | timestamp: 1755378005.0161395
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo237: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.792 | timestamp: 1755378005.8084798
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo238: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 30.000 | timestamp: 1755378035.8088129

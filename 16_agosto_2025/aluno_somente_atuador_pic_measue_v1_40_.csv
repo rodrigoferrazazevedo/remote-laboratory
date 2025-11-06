@@ -1,0 +1,4 @@
+Passo,Step,Valor do Passo,Duracao (s),Timestamp
+0,"[True, False, False, False]",8,6.774277448654175,1755377590.2307055
+1,"[True, False, False, True]",9,0.20809221267700195,1755377590.4378648
+2,"[True, False, False, True]",9,30.0001277923584,1755377620.4389887

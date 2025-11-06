@@ -1,0 +1,6 @@
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo0: [True, False, False, False] | Valor do passo: 8 | Duracao (s): 6.774 | timestamp: 1755377590.2307055
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo1: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 0.208 | timestamp: 1755377590.4378648
+IOs: ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo2: [True, False, False, True] | Valor do passo: 9 | Duracao (s): 30.000 | timestamp: 1755377620.4389887

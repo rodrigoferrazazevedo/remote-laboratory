@@ -8,6 +8,7 @@ import csv
 import os
 import json
 
+
 def connect_to_plc(plc_ip: str, rack: int, slot: int) -> snap7.client.Client:
     try:
         plc = snap7.client.Client()
@@ -44,6 +45,10 @@ def generate_IOs(num_inputs: int, num_outputs: int) -> list:
         IOs.append(f'in{i}')
     for i in range(1, num_outputs + 1):
         IOs.append(f'out{i}')
+    #IOs = ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+    #IOs = ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+    IOs = ['""Cilindro_1A_recuado""', '"Cilindro_1A_avancado"', '"Cilindro_2A_recuado"', '"Cilindro_2A_avancado"', '"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+    IOs = ['"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
     return IOs
 
 def save_data(experiment_number, byte, IOs, cont, txt_filename, csv_filename, experiment_name):
@@ -81,7 +86,7 @@ def save_previous_state(experiment_number, byte, IOs, cont, txt_filename, csv_fi
 
         step_json = json.dumps(step)
 
-        print(f"[save_previous_state] Salvando estado anterior: passo={cont}, Duracao={duration:.3f}s")
+        #print(f"[save_previous_state] Salvando estado anterior: VP = {valor_do_passo} -- passo={cont}, Duracao={duration:.3f}s")
 
         banco.insert_data_with_duration(experiment_number, cont, step_json, valor_do_passo, timestamp, experiment_name, duration)
 
@@ -99,20 +104,58 @@ def save_previous_state(experiment_number, byte, IOs, cont, txt_filename, csv_fi
     except Exception as e:
         print(f"[save_previous_state] Erro ao salvar estado anterior: {e}")
 
-def check_and_create_new_version(base_filename):
+import os
+from datetime import datetime
+
+def check_and_create_new_version(base_filename, isProfessor):
+    meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+             'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+    
+    hoje = datetime.now()
+    nome_pasta = f"{hoje.day}_{meses[hoje.month - 1]}_{hoje.year}"
+
+    if not os.path.exists(nome_pasta):
+        os.makedirs(nome_pasta)
+
+    prefixo = 'professor_' if isProfessor else 'aluno_'
+
     version = 1
-    txt_filename = f"{base_filename}.txt"
-    csv_filename = f"{base_filename}.csv"
+    txt_filename = os.path.join(nome_pasta, f"{prefixo}somente_atuador_{base_filename}.txt")
+    csv_filename = os.path.join(nome_pasta, f"{prefixo}somente_atuador_{base_filename}.csv")
 
     while os.path.exists(txt_filename) or os.path.exists(csv_filename):
         version += 1
-        txt_filename = f"{base_filename}_v{version}.txt"
-        csv_filename = f"{base_filename}_v{version}.csv"
+        txt_filename = os.path.join(nome_pasta, f"{prefixo}somente_atuador_{base_filename}_v{version}.txt")
+        csv_filename = os.path.join(nome_pasta, f"{prefixo}somente_atuador_{base_filename}_v{version}.csv")
 
     return txt_filename, csv_filename
 
-def monitor_plc(plc: snap7.client.Client, db_number: int, byte_index: int, IOs: list, experiment_name: str):
+
+# def check_and_create_new_version(base_filename, isProfessor):
+
+#     folder_name = ''
+
+#     nome_baseado_no_aluno_ou_professor = 'professor_'
+#     print('variavale: ', isProfessor)
+#     if(isProfessor == False):
+#         nome_baseado_no_aluno_ou_professor = 'aluno_'
+    
+#     version = 1
+#     txt_filename = f"{nome_baseado_no_aluno_ou_professor}_somente_atuador_{base_filename}.txt"
+#     csv_filename = f"{nome_baseado_no_aluno_ou_professor}_somente_atuador_{base_filename}.csv"
+
+#     while os.path.exists(txt_filename) or os.path.exists(csv_filename):
+#         version += 1
+#         txt_filename = f"{base_filename}_v{version}.txt"
+#         csv_filename = f"{base_filename}_v{version}.csv"
+
+#     return txt_filename, csv_filename
+
+def monitor_plc(plc: snap7.client.Client, db_number: int, byte_index: int, IOs: list, experiment_name: str, isProfessor):
     banco = RemoteLaboratoryDAO()
+
+    print('db number: ', db_number)
+    print('byte number: ', byte_index)
     try:
         experiment_number = banco.get_last_experiment_id() + 1
         print(f"[monitor_plc] Usando experiment_number = {experiment_number}")
@@ -121,7 +164,7 @@ def monitor_plc(plc: snap7.client.Client, db_number: int, byte_index: int, IOs: 
         print("Experiment number = 1\n")
         experiment_number = 1
 
-    txt_filename, csv_filename = check_and_create_new_version(f'{experiment_name}_{experiment_number}_')
+    txt_filename, csv_filename = check_and_create_new_version(f'{experiment_name}_{experiment_number}_', isProfessor)
 
     contador = 0
     old_bits = None
@@ -214,6 +257,15 @@ def monitor_plc(plc: snap7.client.Client, db_number: int, byte_index: int, IOs: 
     exit(1)
 
 if __name__ == '__main__':
+
+    isProfessor = False
+
+    professor_aluno = int(input("Professor [1] ou aluno [0?]   "))
+
+    if professor_aluno == 1:
+        print('é professor!')
+        isProfessor = True
+
     banco = RemoteLaboratoryDAO()
     plants = banco.list_plant_configs()
 
@@ -253,6 +305,8 @@ if __name__ == '__main__':
     num_outputs = config['num_of_outputs']
 
     IOs = generate_IOs(num_inputs, num_outputs)
+    
+    print('tamanho das IOs', len(IOs))
 
     if len(IOs) > 8:
         print(f"Erro: número de IOs ({len(IOs)}) maior que 8. Encerrando aplicação.")
@@ -266,7 +320,7 @@ if __name__ == '__main__':
             print('PLC conectado!')
             byte_index = 0
             try:
-                monitor_plc(magFront, db_number=db_number, byte_index=byte_index, IOs=IOs, experiment_name=experiment_name)
+                monitor_plc(magFront, db_number=db_number, byte_index=byte_index, IOs=IOs, experiment_name=experiment_name, isProfessor=isProfessor)
             except Exception as e:
                 print(f'[IP: {plc_ip}] Erro ao tentar coletar dados do PLC. Ocorreu o seguinte erro: {e}\n\n')
                 time.sleep(5)

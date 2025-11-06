@@ -1,0 +1,2 @@
+IOs: ['""Cilindro_1A_recuado""', '"Cilindro_1A_avancado"', '"Cilindro_2A_recuado"', '"Cilindro_2A_avancado"', '"Recuar_cilindro1A"', '"Avancar_cilindro1A"', '"Recuar_cilindro2A"', '"Avancar_cilindro2A"']
+Passo0: [True, False, True, False, False, False, False, False] | Valor do passo: 160 | Duracao (s): 30.001 | timestamp: 1752540168.7471645

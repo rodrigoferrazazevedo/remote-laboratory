@@ -1,0 +1,6 @@
+Passo,Step,Valor do Passo,Duracao (s),Timestamp
+0,"[False, True, False, False, False, True, True, False]",70,13.357999086380005,1751930732.4698365
+1,"[False, False, False, False, False, True, True, False]",6,0.00870370864868164,1751930732.4785402
+2,"[False, True, False, False, False, True, True, False]",70,0.19750189781188965,1751930732.676042
+3,"[False, False, False, False, False, True, True, False]",6,0.36377835273742676,1751930733.0398204
+4,"[False, False, False, False, False, True, True, False]",6,30.000449419021606,1751930763.0402699

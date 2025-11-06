@@ -1,0 +1,28 @@
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo0: [False, True, False, False, False, True, True, False] | Valor do passo: 70 | Duracao (s): 7.642 | timestamp: 1751935254.5746295
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo1: [False, False, False, False, False, True, True, False] | Valor do passo: 6 | Duracao (s): 1.925 | timestamp: 1751935256.4991558
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo2: [False, False, False, False, True, True, True, False] | Valor do passo: 14 | Duracao (s): 1.858 | timestamp: 1751935258.3573837
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo3: [False, False, False, False, False, True, True, False] | Valor do passo: 6 | Duracao (s): 0.051 | timestamp: 1751935258.4079065
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo4: [False, False, False, True, False, True, True, False] | Valor do passo: 22 | Duracao (s): 0.050 | timestamp: 1751935258.457738
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo5: [False, False, False, False, False, True, True, False] | Valor do passo: 6 | Duracao (s): 0.045 | timestamp: 1751935258.5023031
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo6: [False, False, True, False, False, True, True, False] | Valor do passo: 38 | Duracao (s): 0.174 | timestamp: 1751935258.6763988
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo7: [False, False, True, False, False, True, False, True] | Valor do passo: 37 | Duracao (s): 0.778 | timestamp: 1751935259.4545023
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo8: [False, False, True, False, False, False, False, True] | Valor do passo: 33 | Duracao (s): 0.227 | timestamp: 1751935259.6814423
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo9: [False, False, True, False, False, False, True, False] | Valor do passo: 34 | Duracao (s): 1.331 | timestamp: 1751935261.0120394
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo10: [False, False, True, False, False, True, True, False] | Valor do passo: 38 | Duracao (s): 0.184 | timestamp: 1751935261.19557
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo11: [False, False, False, False, False, True, True, False] | Valor do passo: 6 | Duracao (s): 0.915 | timestamp: 1751935262.1104343
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo12: [True, False, False, False, False, True, True, False] | Valor do passo: 134 | Duracao (s): 2.854 | timestamp: 1751935264.9647295
+IOs: ['xBG6', 'xBG5', 'xBG1_BCD0', 'xBG3_BCD2', 'xBG4_BCD3', 'xCL_BG5', 'xCL_MB3', 'xCL_MB4']
+Passo13: [False, False, False, False, False, True, True, False] | Valor do passo: 6 | Duracao (s): 0.188 | timestamp: 1751935265.1523676
