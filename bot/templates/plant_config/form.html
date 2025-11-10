@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>{{ title }}</h2>
+    <form method="post">
+        <div class="form-grid">
+            <div>
+                <label for="experiment_name">Nome do experimento</label>
+                <input id="experiment_name" name="experiment_name" type="text" value="{{ form.get('experiment_name', '') }}" required>
+            </div>
+            <div>
+                <label for="ip_profinet">IP Profinet</label>
+                <input id="ip_profinet" name="ip_profinet" type="text" value="{{ form.get('ip_profinet', '') }}" required>
+            </div>
+            <div>
+                <label for="rack_profinet">Rack</label>
+                <input id="rack_profinet" name="rack_profinet" type="number" value="{{ form.get('rack_profinet', '') }}" required>
+            </div>
+            <div>
+                <label for="slot_profinet">Slot</label>
+                <input id="slot_profinet" name="slot_profinet" type="number" value="{{ form.get('slot_profinet', '') }}" required>
+            </div>
+            <div>
+                <label for="db_number_profinet">DB Number</label>
+                <input id="db_number_profinet" name="db_number_profinet" type="number" value="{{ form.get('db_number_profinet', '') }}" required>
+            </div>
+            <div>
+                <label for="num_of_inputs">Nº de entradas</label>
+                <input id="num_of_inputs" name="num_of_inputs" type="number" value="{{ form.get('num_of_inputs', '') }}" required>
+            </div>
+            <div>
+                <label for="num_of_outputs">Nº de saídas</label>
+                <input id="num_of_outputs" name="num_of_outputs" type="number" value="{{ form.get('num_of_outputs', '') }}" required>
+            </div>
+        </div>
+        <div class="actions">
+            <button type="submit">{{ submit_label }}</button>
+            <a class="button secondary" href="{{ cancel_url }}">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

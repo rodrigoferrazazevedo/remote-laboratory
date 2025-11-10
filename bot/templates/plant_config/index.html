@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content: space-between; align-items:center;">
+        <h2>Configurações registradas</h2>
+        <a class="button" href="{{ url_for('create_config') }}">Nova configuração</a>
+    </div>
+
+    {% if configs %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Experimento</th>
+                <th>IP</th>
+                <th>Rack</th>
+                <th>Slot</th>
+                <th>DB</th>
+                <th>Entradas</th>
+                <th>Saídas</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for config in configs %}
+            <tr>
+                <td>{{ config.id }}</td>
+                <td>{{ config.experiment_name }}</td>
+                <td>{{ config.ip_profinet }}</td>
+                <td>{{ config.rack_profinet }}</td>
+                <td>{{ config.slot_profinet }}</td>
+                <td>{{ config.db_number_profinet }}</td>
+                <td>{{ config.num_of_inputs }}</td>
+                <td>{{ config.num_of_outputs }}</td>
+                <td>
+                    <a class="button" href="{{ url_for('edit_config', config_id=config.id) }}">Editar</a>
+                    <form class="inline" method="post" action="{{ url_for('delete_config', config_id=config.id) }}" onsubmit="return confirm('Deseja remover esta configuração?');">
+                        <button type="submit" class="secondary">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Nenhuma planta cadastrada.</p>
+    {% endif %}
+</div>
+{% endblock %}

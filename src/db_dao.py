@@ -221,6 +221,145 @@ class RemoteLaboratoryDAO:
         except Exception as e:
             print(f"Erro ao buscar plantas no banco: {e}")
             return []
+
+    def list_full_plant_configs(self):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor(dictionary=True)
+            cursor.execute(
+                """
+                SELECT id, experiment_name, ip_profinet, rack_profinet, slot_profinet,
+                       db_number_profinet, num_of_inputs, num_of_outputs
+                FROM plant_config
+                ORDER BY experiment_name ASC
+                """
+            )
+            return cursor.fetchall()
+        except mysql.connector.Error as e:
+            print(f"Erro ao buscar as plantas no banco: {e}")
+            return []
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb and mydb.is_connected():
+                mydb.close()
+
+    def get_plant_config_by_id(self, config_id: int):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor(dictionary=True)
+            cursor.execute(
+                "SELECT * FROM plant_config WHERE id = %s",
+                (config_id,)
+            )
+            return cursor.fetchone()
+        except mysql.connector.Error as e:
+            print(f"Erro ao buscar a configuração: {e}")
+            return None
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb and mydb.is_connected():
+                mydb.close()
+
+    def create_plant_config(self, experiment_name, ip_profinet, rack_profinet,
+                             slot_profinet, db_number_profinet, num_inputs, num_outputs):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            cursor.execute(
+                """
+                INSERT INTO plant_config
+                (experiment_name, ip_profinet, rack_profinet, slot_profinet,
+                 db_number_profinet, num_of_inputs, num_of_outputs)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    experiment_name,
+                    ip_profinet,
+                    rack_profinet,
+                    slot_profinet,
+                    db_number_profinet,
+                    num_inputs,
+                    num_outputs
+                )
+            )
+            mydb.commit()
+            return cursor.lastrowid
+        except mysql.connector.Error as e:
+            print(f"Erro ao criar a configuração da planta: {e}")
+            return None
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb and mydb.is_connected():
+                mydb.close()
+
+    def update_plant_config(self, config_id, experiment_name, ip_profinet,
+                             rack_profinet, slot_profinet, db_number_profinet,
+                             num_inputs, num_outputs):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            cursor.execute(
+                """
+                UPDATE plant_config
+                SET experiment_name=%s,
+                    ip_profinet=%s,
+                    rack_profinet=%s,
+                    slot_profinet=%s,
+                    db_number_profinet=%s,
+                    num_of_inputs=%s,
+                    num_of_outputs=%s
+                WHERE id=%s
+                """,
+                (
+                    experiment_name,
+                    ip_profinet,
+                    rack_profinet,
+                    slot_profinet,
+                    db_number_profinet,
+                    num_inputs,
+                    num_outputs,
+                    config_id,
+                )
+            )
+            mydb.commit()
+            return cursor.rowcount
+        except mysql.connector.Error as e:
+            print(f"Erro ao atualizar a configuração da planta: {e}")
+            return 0
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb and mydb.is_connected():
+                mydb.close()
+
+    def delete_plant_config(self, config_id: int) -> bool:
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            cursor.execute("DELETE FROM plant_config WHERE id = %s", (config_id,))
+            mydb.commit()
+            return cursor.rowcount > 0
+        except mysql.connector.Error as e:
+            print(f"Erro ao deletar a configuração: {e}")
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb and mydb.is_connected():
+                mydb.close()
         
     def insert_data_with_duration(self, experiment_number, step, pulse_train, pulse_value, time_to_change, experiment_name, duration):
         try:

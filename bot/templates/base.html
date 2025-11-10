@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title or 'Plant Config Manager' }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f5f6f8; margin: 0; }
+        header { background: #1f2933; color: #fff; padding: 16px 24px; }
+        main { padding: 24px; }
+        a.button, button, input[type="submit"] {
+            background: #2563eb; border: none; color: #fff; padding: 8px 16px;
+            text-decoration: none; display: inline-block; border-radius: 4px; cursor: pointer;
+        }
+        a.button.secondary, button.secondary { background: #6b7280; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; background: #fff; }
+        th, td { border: 1px solid #e5e7eb; padding: 8px 10px; text-align: left; }
+        th { background: #f3f4f6; }
+        form.inline { display: inline; }
+        .flash { padding: 10px 12px; border-radius: 4px; margin-bottom: 12px; }
+        .flash.success { background: #dcfce7; color: #14532d; }
+        .flash.error { background: #fee2e2; color: #7f1d1d; }
+        .card { background: #fff; padding: 16px; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+        label { font-size: 0.9rem; color: #374151; display: block; margin-bottom: 4px; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; }
+        .actions { margin-top: 16px; display: flex; gap: 12px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gerenciador de Planta</h1>
+    </header>
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
