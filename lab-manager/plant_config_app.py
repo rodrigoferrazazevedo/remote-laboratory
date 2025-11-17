@@ -1,9 +1,19 @@
 import os
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    Flask,
+    abort,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 
 
 BOT_DIR = Path(__file__).resolve().parent
@@ -16,6 +26,7 @@ from src.db_dao import RemoteLaboratoryDAO  # noqa: E402  (import after sys.path
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "dev")
+api = Blueprint("api", __name__, url_prefix="/api")
 
 
 def _get_dao() -> RemoteLaboratoryDAO:
@@ -269,5 +280,149 @@ def delete_ground_truth(pattern_id: int):
     return redirect(url_for("ground_truth_index"))
 
 
+@api.get("/experiments")
+def api_list_experiments():
+    dao = _get_dao()
+    return jsonify(dao.list_full_plant_configs())
+
+
+@api.post("/experiments")
+def api_create_experiment():
+    payload = _json_payload()
+    required = [
+        "experiment_name",
+        "ip_profinet",
+        "rack_profinet",
+        "slot_profinet",
+        "db_number_profinet",
+        "num_of_inputs",
+        "num_of_outputs",
+    ]
+    _require_fields(payload, required)
+    dao = _get_dao()
+    created_id = dao.create_plant_config(
+        payload["experiment_name"],
+        payload["ip_profinet"],
+        int(payload["rack_profinet"]),
+        int(payload["slot_profinet"]),
+        int(payload["db_number_profinet"]),
+        int(payload["num_of_inputs"]),
+        int(payload["num_of_outputs"]),
+    )
+    if not created_id:
+        abort(400, description="Não foi possível criar o experimento.")
+    return jsonify({"id": created_id}), 201
+
+
+@api.get("/experiments/<int:config_id>")
+def api_get_experiment(config_id: int):
+    dao = _get_dao()
+    config = dao.get_plant_config_by_id(config_id)
+    if not config:
+        abort(404, description="Experimento não encontrado.")
+    return jsonify(config)
+
+
+@api.put("/experiments/<int:config_id>")
+def api_update_experiment(config_id: int):
+    payload = _json_payload()
+    required = [
+        "experiment_name",
+        "ip_profinet",
+        "rack_profinet",
+        "slot_profinet",
+        "db_number_profinet",
+        "num_of_inputs",
+        "num_of_outputs",
+    ]
+    _require_fields(payload, required)
+    dao = _get_dao()
+    updated = dao.update_plant_config(
+        config_id,
+        payload.get("experiment_name"),
+        payload.get("ip_profinet"),
+        int(payload.get("rack_profinet")),
+        int(payload.get("slot_profinet")),
+        int(payload.get("db_number_profinet")),
+        int(payload.get("num_of_inputs")),
+        int(payload.get("num_of_outputs")),
+    )
+    if not updated:
+        abort(400, description="Não foi possível atualizar o experimento.")
+    return jsonify({"updated": True})
+
+
+@api.delete("/experiments/<int:config_id>")
+def api_delete_experiment(config_id: int):
+    dao = _get_dao()
+    removed = dao.delete_plant_config(config_id)
+    if not removed:
+        abort(404, description="Experimento não encontrado.")
+    return jsonify({"deleted": True})
+
+
+@api.get("/ground-truth")
+def api_list_ground_truth():
+    dao = _get_dao()
+    return jsonify(dao.list_ground_truth_patterns())
+
+
+@api.post("/ground-truth")
+def api_create_ground_truth():
+    payload = _json_payload()
+    _require_fields(payload, ["experiment_name", "ground_truth"])
+    dao = _get_dao()
+    created_id = dao.create_ground_truth_pattern(payload["experiment_name"], payload["ground_truth"])
+    if not created_id:
+        abort(400, description="Não foi possível criar o padrão.")
+    return jsonify({"id": created_id}), 201
+
+
+@api.get("/ground-truth/<int:pattern_id>")
+def api_get_ground_truth(pattern_id: int):
+    dao = _get_dao()
+    pattern = dao.get_ground_truth_pattern_by_id(pattern_id)
+    if not pattern:
+        abort(404, description="Padrão não encontrado.")
+    return jsonify(pattern)
+
+
+@api.put("/ground-truth/<int:pattern_id>")
+def api_update_ground_truth(pattern_id: int):
+    payload = _json_payload()
+    _require_fields(payload, ["experiment_name", "ground_truth"])
+    dao = _get_dao()
+    updated = dao.update_ground_truth_pattern(
+        pattern_id,
+        payload.get("experiment_name"),
+        payload.get("ground_truth"),
+    )
+    if not updated:
+        abort(400, description="Não foi possível atualizar o padrão.")
+    return jsonify({"updated": True})
+
+
+@api.delete("/ground-truth/<int:pattern_id>")
+def api_delete_ground_truth(pattern_id: int):
+    dao = _get_dao()
+    removed = dao.delete_ground_truth_pattern(pattern_id)
+    if not removed:
+        abort(404, description="Padrão não encontrado.")
+    return jsonify({"deleted": True})
+
+
+app.register_blueprint(api)
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+def _json_payload():
+    data = request.get_json(silent=True)
+    if data is None:
+        abort(400, description="Payload JSON é obrigatório.")
+    return data
+
+
+def _require_fields(payload: Dict[str, Any], required_fields: List[str]) -> None:
+    missing = [field for field in required_fields if field not in payload or payload[field] in (None, "")]
+    if missing:
+        abort(400, description=f"Campos obrigatórios ausentes: {', '.join(missing)}")

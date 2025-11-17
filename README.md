@@ -9,7 +9,7 @@
 
 ## Adaptations for the TCC project
 
-- `bot/readfiles.py`: CLI helper that scans every `.csv` located in the project root and prints each file as a formatted text table (normalizes column sizes, pads spacing, and keeps headers aligned). Run `python bot/readfiles.py` to inspect collected datasets directly from the terminal.
+- `lab-manager/readfiles.py`: CLI helper that scans every `.csv` located in the project root and prints each file as a formatted text table (normalizes column sizes, pads spacing, and keeps headers aligned). Run `python lab-manager/readfiles.py` to inspect collected datasets directly from the terminal.
 
 ---
 
@@ -48,6 +48,10 @@ REMOTE-LABORATORY/
 │    └── summary_pulse_values.sql
 ├── src/
 │    └── db_dao.py             # Database access object (RemoteLaboratoryDAO)
+├── lab-manager/              # Flask UI + REST API for experiment/pattern management
+│    ├── plant_config_app.py
+│    ├── templates/
+│    └── readfiles.py
 ├── collecting_data_opcua_old.py  # [legacy] Script for OPC UA communication
 ├── collecting_profinet.py        # [legacy] Script for Profinet communication
 ├── insert_pulse_train_on_database.py  # Utility to insert custom pulse trains
@@ -140,7 +144,7 @@ export SQLITE_DB_PATH=/abs/path/para/remote_lab.sqlite3
 - Quando `DB_BACKEND=sqlite`, o arquivo informado em `SQLITE_DB_PATH` é criado automaticamente (padrão: `data/remote_lab.sqlite3`) e todas as consultas passam a usar o driver embutido `sqlite3`.
 - Certifique-se de apontar `SQLITE_DB_PATH` para um local com permissão de escrita. Se for um caminho inválido, o DAO volta automaticamente para `data/remote_lab.sqlite3`.
 
-Essa configuração vale automaticamente para toda a aplicação Flask (`bot/plant_config_app.py`) e para os scripts que utilizam `RemoteLaboratoryDAO`.
+Essa configuração vale automaticamente para toda a aplicação Flask (`lab-manager/plant_config_app.py`) e para os scripts que utilizam `RemoteLaboratoryDAO`.
 
 ---
 
@@ -150,6 +154,17 @@ Essa configuração vale automaticamente para toda a aplicação Flask (`bot/pla
 - **Gerenciador de Padrões do Professor** – disponível em `http://localhost:5000/ground-truth` – manipula os dados de `ground_truth_patterns`, permitindo cadastrar os padrões vindos do script `patterns_from_professor.sql` diretamente da interface web.
 
 Ambos os módulos compartilham o mesmo backend (MySQL ou SQLite), então qualquer alteração via UI é automaticamente refletida no banco correspondente.
+
+---
+
+### REST API
+
+O mesmo aplicativo (`lab-manager/plant_config_app.py`) expõe um blueprint JSON em `http://localhost:5000/api`. Principais rotas:
+
+- `GET /api/experiments` / `POST /api/experiments` / `GET|PUT|DELETE /api/experiments/<id>` para listar, criar e administrar entradas em `plant_config`.
+- `GET /api/ground-truth` / `POST /api/ground-truth` / `GET|PUT|DELETE /api/ground-truth/<id>` para gerenciar `ground_truth_patterns`.
+
+As rotas executam validações básicas e retornam códigos HTTP apropriados, facilitando a integração com chatbots ou qualquer outro cliente.
 
 ---
 
