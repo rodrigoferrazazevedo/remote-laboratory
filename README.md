@@ -61,10 +61,10 @@ REMOTE-LABORATORY/
 ## Requirements
 
 - Python 3.9+
-- MySQL Server (tested with MySQL 8.0)
+- SQLite 3 (já incluso no Python) **ou** um servidor MySQL 8.0+
 - Python libraries:
   - `snap7`
-  - `mysql-connector-python`
+  - `mysql-connector-python` (somente necessário quando `DB_BACKEND=mysql`)
 
 Install dependencies with:
 
@@ -115,6 +115,30 @@ You need to run the SQL scripts inside the `database-scripts/` folder to create 
 
 - `dadoscoletados2`: stores individual pulse data
 - `dadoscoletados_summary`: stores full pulse train patterns
+
+---
+
+### Database backend selection
+
+`RemoteLaboratoryDAO` agora aceita tanto **MySQL** quanto **SQLite**. A escolha é feita através da variável de ambiente `DB_BACKEND`:
+
+```bash
+# MySQL (padrão)
+export DB_BACKEND=mysql
+export MYSQL_HOST=localhost
+export MYSQL_DATABASE=cae_dr
+export MYSQL_USER=root
+export MYSQL_PASSWORD=secret
+
+# ou SQLite
+export DB_BACKEND=sqlite
+export SQLITE_DB_PATH=/abs/path/para/remote_lab.sqlite3
+```
+
+- Quando `DB_BACKEND=mysql` (valor padrão) nada muda em relação ao comportamento antigo; você só precisa garantir que o `mysql-connector-python` está instalado e que o banco `cae_dr` exista.
+- Quando `DB_BACKEND=sqlite`, o arquivo informado em `SQLITE_DB_PATH` é criado automaticamente (padrão: `data/remote_lab.sqlite3`) e todas as consultas passam a usar o driver embutido `sqlite3`.
+
+Essa configuração vale automaticamente para toda a aplicação Flask (`bot/plant_config_app.py`) e para os scripts que utilizam `RemoteLaboratoryDAO`.
 
 ---
 
