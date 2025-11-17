@@ -12,7 +12,7 @@ except ModuleNotFoundError:  # pragma: no cover - optional dependency
     MySQLError = Exception  # type: ignore[assignment]
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_SQLITE_PATH = PROJECT_ROOT / "data" / "remote_lab.sqlite3"
+DEFAULT_SQLITE_PATH = (PROJECT_ROOT / "data" / "remote_lab.sqlite3").resolve()
 
 
 class RemoteLaboratoryDAO:
@@ -29,13 +29,55 @@ class RemoteLaboratoryDAO:
             "user": os.environ.get("MYSQL_USER", "root"),
             "password": os.environ.get("MYSQL_PASSWORD", ""),
         }
-        sqlite_path = os.environ.get("SQLITE_DB_PATH", str(DEFAULT_SQLITE_PATH))
-        self.sqlite_path = Path(sqlite_path)
+        sqlite_path = os.environ.get("SQLITE_DB_PATH")
+        self.sqlite_path = self._resolve_sqlite_path(sqlite_path)
         self._db_errors = (MySQLError, sqlite3.Error)
+        if self.db_backend == "sqlite":
+            self._prepare_sqlite_backend()
+
+    def _resolve_sqlite_path(self, custom_path: Optional[str]) -> Path:
+        path = Path(custom_path).expanduser() if custom_path else DEFAULT_SQLITE_PATH
+        if not path.is_absolute():
+            path = PROJECT_ROOT / path
+        return path
+
+    def _prepare_sqlite_backend(self) -> None:
+        try:
+            self._ensure_sqlite_dir()
+        except OSError as exc:
+            print(
+                f"Não foi possível criar o diretório para {self.sqlite_path}: {exc}. "
+                f"Usando caminho padrão {DEFAULT_SQLITE_PATH}."
+            )
+            self.sqlite_path = DEFAULT_SQLITE_PATH
+            self._ensure_sqlite_dir()
+        self._ensure_sqlite_schema()
 
     def _ensure_sqlite_dir(self) -> None:
         if self.db_backend == "sqlite":
             self.sqlite_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def _ensure_sqlite_schema(self) -> None:
+        """Create minimal tables needed for the Flask UI quando se usa SQLite."""
+        conn = sqlite3.connect(self.sqlite_path)
+        try:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS plant_config (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    experiment_name TEXT NOT NULL UNIQUE,
+                    ip_profinet TEXT NOT NULL,
+                    rack_profinet INTEGER NOT NULL,
+                    slot_profinet INTEGER NOT NULL,
+                    db_number_profinet INTEGER NOT NULL,
+                    num_of_inputs INTEGER NOT NULL,
+                    num_of_outputs INTEGER NOT NULL
+                )
+                """
+            )
+            conn.commit()
+        finally:
+            conn.close()
 
     def _prepare_query(self, query: str) -> str:
         if self.db_backend == "sqlite":

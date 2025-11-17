@@ -137,6 +137,7 @@ export SQLITE_DB_PATH=/abs/path/para/remote_lab.sqlite3
 
 - Quando `DB_BACKEND=mysql` (valor padrão) nada muda em relação ao comportamento antigo; você só precisa garantir que o `mysql-connector-python` está instalado e que o banco `cae_dr` exista.
 - Quando `DB_BACKEND=sqlite`, o arquivo informado em `SQLITE_DB_PATH` é criado automaticamente (padrão: `data/remote_lab.sqlite3`) e todas as consultas passam a usar o driver embutido `sqlite3`.
+- Certifique-se de apontar `SQLITE_DB_PATH` para um local com permissão de escrita. Se for um caminho inválido, o DAO volta automaticamente para `data/remote_lab.sqlite3`.
 
 Essa configuração vale automaticamente para toda a aplicação Flask (`bot/plant_config_app.py`) e para os scripts que utilizam `RemoteLaboratoryDAO`.
 

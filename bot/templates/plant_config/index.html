@@ -2,8 +2,8 @@
 {% block content %}
 <div class="card">
     <div style="display:flex; justify-content: space-between; align-items:center;">
-        <h2>Configurações registradas</h2>
-        <a class="button" href="{{ url_for('create_config') }}">Nova configuração</a>
+        <h2>Experimentos cadastrados</h2>
+        <a class="button" href="{{ url_for('create_config') }}">Novo experimento</a>
     </div>
 
     {% if configs %}
@@ -43,7 +43,7 @@
         </tbody>
     </table>
     {% else %}
-    <p>Nenhuma planta cadastrada.</p>
+    <p>Nenhum experimento cadastrado.</p>
     {% endif %}
 </div>
 {% endblock %}

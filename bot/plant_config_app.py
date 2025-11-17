@@ -70,7 +70,11 @@ def _validate_form_data(form_data: Dict[str, str]) -> Tuple[Dict[str, int], List
 def index():
     dao = _get_dao()
     configs = dao.list_full_plant_configs()
-    return render_template("plant_config/index.html", configs=configs)
+    return render_template(
+        "plant_config/index.html",
+        configs=configs,
+        title="Gerenciador de Experimentos",
+    )
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -80,7 +84,7 @@ def create_config():
         numeric_values, errors = _validate_form_data(form_data)
         if not errors:
             dao = _get_dao()
-            dao.create_plant_config(
+            created_id = dao.create_plant_config(
                 form_data["experiment_name"],
                 form_data["ip_profinet"],
                 numeric_values.get("rack_profinet"),
@@ -89,8 +93,10 @@ def create_config():
                 numeric_values.get("num_of_inputs"),
                 numeric_values.get("num_of_outputs"),
             )
-            flash("Configuração criada com sucesso!", "success")
-            return redirect(url_for("index"))
+            if created_id:
+                flash("Configuração criada com sucesso!", "success")
+                return redirect(url_for("index"))
+            flash("Não foi possível salvar a configuração.", "error")
         for error in errors:
             flash(error, "error")
     return render_template(
