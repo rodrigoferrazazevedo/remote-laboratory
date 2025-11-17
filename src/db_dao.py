@@ -58,7 +58,7 @@ class RemoteLaboratoryDAO:
             self.sqlite_path.parent.mkdir(parents=True, exist_ok=True)
 
     def _ensure_sqlite_schema(self) -> None:
-        """Create minimal tables needed for the Flask UI quando se usa SQLite."""
+        """Create minimal tables needed for a execução com SQLite."""
         conn = sqlite3.connect(self.sqlite_path)
         try:
             conn.execute(
@@ -72,6 +72,15 @@ class RemoteLaboratoryDAO:
                     db_number_profinet INTEGER NOT NULL,
                     num_of_inputs INTEGER NOT NULL,
                     num_of_outputs INTEGER NOT NULL
+                )
+                """
+            )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS ground_truth_patterns (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    experiment_name TEXT NOT NULL UNIQUE,
+                    ground_truth TEXT NOT NULL
                 )
                 """
             )
@@ -434,6 +443,162 @@ class RemoteLaboratoryDAO:
             return cursor.rowcount > 0
         except self._db_errors as e:
             print(f"Erro ao deletar a configuração: {e}")
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    # -----------------------------
+    # Ground truth patterns (professor)
+    # -----------------------------
+
+    def list_ground_truth_patterns(self):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            if self.db_backend == "sqlite":
+                cursor = mydb.cursor()
+            else:
+                cursor = mydb.cursor(dictionary=True)
+            self._execute(
+                cursor,
+                """
+                SELECT id, experiment_name, ground_truth
+                FROM ground_truth_patterns
+                ORDER BY experiment_name ASC
+                """,
+            )
+            rows = cursor.fetchall()
+            return self._dict_rows(rows)
+        except self._db_errors as e:
+            print(f"Erro ao buscar os padrões do professor: {e}")
+            return []
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    def get_ground_truth_pattern_by_id(self, pattern_id: int):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            if self.db_backend == "sqlite":
+                cursor = mydb.cursor()
+            else:
+                cursor = mydb.cursor(dictionary=True)
+            self._execute(
+                cursor,
+                "SELECT * FROM ground_truth_patterns WHERE id = %s",
+                (pattern_id,),
+            )
+            row = cursor.fetchone()
+            return self._dict_row(row)
+        except self._db_errors as e:
+            print(f"Erro ao buscar o padrão do professor: {e}")
+            return None
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    def get_ground_truth_by_experiment(self, experiment_name: str):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            if self.db_backend == "sqlite":
+                cursor = mydb.cursor()
+            else:
+                cursor = mydb.cursor(dictionary=True)
+            self._execute(
+                cursor,
+                "SELECT * FROM ground_truth_patterns WHERE experiment_name = %s",
+                (experiment_name,),
+            )
+            row = cursor.fetchone()
+            return self._dict_row(row)
+        except self._db_errors as e:
+            print(f"Erro ao buscar o padrão por experimento: {e}")
+            return None
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    def create_ground_truth_pattern(self, experiment_name: str, ground_truth: str):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            self._execute(
+                cursor,
+                """
+                INSERT INTO ground_truth_patterns (experiment_name, ground_truth)
+                VALUES (%s, %s)
+                """,
+                (experiment_name, ground_truth),
+            )
+            mydb.commit()
+            return cursor.lastrowid
+        except self._db_errors as e:
+            print(f"Erro ao criar o padrão do professor: {e}")
+            return None
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    def update_ground_truth_pattern(self, pattern_id: int, experiment_name: str, ground_truth: str):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            self._execute(
+                cursor,
+                """
+                UPDATE ground_truth_patterns
+                SET experiment_name=%s,
+                    ground_truth=%s
+                WHERE id=%s
+                """,
+                (experiment_name, ground_truth, pattern_id),
+            )
+            mydb.commit()
+            return cursor.rowcount
+        except self._db_errors as e:
+            print(f"Erro ao atualizar o padrão do professor: {e}")
+            return 0
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    def delete_ground_truth_pattern(self, pattern_id: int) -> bool:
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            self._execute(
+                cursor,
+                "DELETE FROM ground_truth_patterns WHERE id = %s",
+                (pattern_id,),
+            )
+            mydb.commit()
+            return cursor.rowcount > 0
+        except self._db_errors as e:
+            print(f"Erro ao deletar o padrão do professor: {e}")
             return False
         finally:
             if cursor:

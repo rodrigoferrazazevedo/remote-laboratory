@@ -115,6 +115,7 @@ You need to run the SQL scripts inside the `database-scripts/` folder to create 
 
 - `dadoscoletados2`: stores individual pulse data
 - `dadoscoletados_summary`: stores full pulse train patterns
+- `ground_truth_patterns`: referência dos padrões do professor para cada experimento (alimentados pela nova UI de gerenciamento)
 
 ---
 
@@ -140,6 +141,15 @@ export SQLITE_DB_PATH=/abs/path/para/remote_lab.sqlite3
 - Certifique-se de apontar `SQLITE_DB_PATH` para um local com permissão de escrita. Se for um caminho inválido, o DAO volta automaticamente para `data/remote_lab.sqlite3`.
 
 Essa configuração vale automaticamente para toda a aplicação Flask (`bot/plant_config_app.py`) e para os scripts que utilizam `RemoteLaboratoryDAO`.
+
+---
+
+### Web managers (Flask)
+
+- **Gerenciador de Experimentos** – disponível em `http://localhost:5000/` – lista/cria/edita/exclui registros da tabela `plant_config`.
+- **Gerenciador de Padrões do Professor** – disponível em `http://localhost:5000/ground-truth` – manipula os dados de `ground_truth_patterns`, permitindo cadastrar os padrões vindos do script `patterns_from_professor.sql` diretamente da interface web.
+
+Ambos os módulos compartilham o mesmo backend (MySQL ou SQLite), então qualquer alteração via UI é automaticamente refletida no banco correspondente.
 
 ---
 

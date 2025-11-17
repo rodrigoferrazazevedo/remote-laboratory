@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>{{ title }}</h2>
+    <form method="post">
+        <div class="form-grid">
+            <div>
+                <label for="experiment_name">Nome do experimento</label>
+                <input id="experiment_name" name="experiment_name" type="text" value="{{ form.get('experiment_name', '') }}" required>
+            </div>
+            <div class="full-width">
+                <label for="ground_truth">Padrão (JSON ou texto)</label>
+                <textarea id="ground_truth" name="ground_truth" rows="6" required>{{ form.get('ground_truth', '') }}</textarea>
+            </div>
+        </div>
+        <div class="actions">
+            <button type="submit">{{ submit_label }}</button>
+            <a class="button secondary" href="{{ cancel_url }}">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

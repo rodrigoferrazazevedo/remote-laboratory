@@ -66,6 +66,22 @@ def _validate_form_data(form_data: Dict[str, str]) -> Tuple[Dict[str, int], List
     return numeric_values, errors
 
 
+def _collect_ground_truth_form_data() -> Dict[str, str]:
+    return {
+        "experiment_name": (request.form.get("experiment_name") or "").strip(),
+        "ground_truth": (request.form.get("ground_truth") or "").strip(),
+    }
+
+
+def _validate_ground_truth_form_data(form_data: Dict[str, str]) -> List[str]:
+    errors: List[str] = []
+    if not form_data["experiment_name"]:
+        errors.append("O nome do experimento é obrigatório.")
+    if not form_data["ground_truth"]:
+        errors.append("O padrão é obrigatório.")
+    return errors
+
+
 @app.route("/")
 def index():
     dao = _get_dao()
@@ -164,6 +180,93 @@ def delete_config(config_id: int):
     else:
         flash("Não foi possível remover a configuração.", "error")
     return redirect(url_for("index"))
+
+
+@app.route("/ground-truth")
+def ground_truth_index():
+    dao = _get_dao()
+    patterns = dao.list_ground_truth_patterns()
+    return render_template(
+        "ground_truth/index.html",
+        patterns=patterns,
+        title="Padrões do Professor",
+    )
+
+
+@app.route("/ground-truth/create", methods=["GET", "POST"])
+def create_ground_truth():
+    form_data = _collect_ground_truth_form_data() if request.method == "POST" else {}
+    if request.method == "POST":
+        errors = _validate_ground_truth_form_data(form_data)
+        if not errors:
+            dao = _get_dao()
+            created_id = dao.create_ground_truth_pattern(
+                form_data["experiment_name"],
+                form_data["ground_truth"],
+            )
+            if created_id:
+                flash("Padrão cadastrado com sucesso!", "success")
+                return redirect(url_for("ground_truth_index"))
+            flash("Não foi possível salvar o padrão.", "error")
+        for error in errors:
+            flash(error, "error")
+    return render_template(
+        "ground_truth/form.html",
+        form=form_data,
+        title="Novo padrão do professor",
+        submit_label="Criar",
+        cancel_url=url_for("ground_truth_index"),
+    )
+
+
+@app.route("/ground-truth/edit/<int:pattern_id>", methods=["GET", "POST"])
+def edit_ground_truth(pattern_id: int):
+    dao = _get_dao()
+    existing = dao.get_ground_truth_pattern_by_id(pattern_id)
+    if not existing:
+        flash("Padrão não encontrado.", "error")
+        return redirect(url_for("ground_truth_index"))
+
+    if request.method == "POST":
+        form_data = _collect_ground_truth_form_data()
+        errors = _validate_ground_truth_form_data(form_data)
+        if not errors:
+            updated = dao.update_ground_truth_pattern(
+                pattern_id,
+                form_data["experiment_name"],
+                form_data["ground_truth"],
+            )
+            if updated:
+                flash("Padrão atualizado com sucesso!", "success")
+                return redirect(url_for("ground_truth_index"))
+            flash("Não foi possível atualizar o padrão.", "error")
+        for error in errors:
+            flash(error, "error")
+        form = form_data
+    else:
+        form = {
+            "experiment_name": existing.get("experiment_name", ""),
+            "ground_truth": existing.get("ground_truth", ""),
+        }
+
+    return render_template(
+        "ground_truth/form.html",
+        form=form,
+        title="Editar padrão do professor",
+        submit_label="Salvar",
+        cancel_url=url_for("ground_truth_index"),
+    )
+
+
+@app.route("/ground-truth/delete/<int:pattern_id>", methods=["POST"])
+def delete_ground_truth(pattern_id: int):
+    dao = _get_dao()
+    removed = dao.delete_ground_truth_pattern(pattern_id)
+    if removed:
+        flash("Padrão removido.", "success")
+    else:
+        flash("Não foi possível remover o padrão.", "error")
+    return redirect(url_for("ground_truth_index"))
 
 
 if __name__ == "__main__":

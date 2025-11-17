@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content: space-between; align-items:center;">
+        <h2>Padrões do professor</h2>
+        <a class="button" href="{{ url_for('create_ground_truth') }}">Novo padrão</a>
+    </div>
+
+    {% if patterns %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Experimento</th>
+                <th>Padrão</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pattern in patterns %}
+            <tr>
+                <td>{{ pattern.id }}</td>
+                <td>{{ pattern.experiment_name }}</td>
+                <td class="pattern-cell">{{ pattern.ground_truth }}</td>
+                <td>
+                    <a class="button" href="{{ url_for('edit_ground_truth', pattern_id=pattern.id) }}">Editar</a>
+                    <form class="inline" method="post" action="{{ url_for('delete_ground_truth', pattern_id=pattern.id) }}" onsubmit="return confirm('Deseja remover este padrão?');">
+                        <button type="submit" class="secondary">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Nenhum padrão cadastrado.</p>
+    {% endif %}
+</div>
+{% endblock %}
