@@ -95,7 +95,7 @@ pip install python-snap7 mysql-connector-python
 ### Run the main script
 
 ```bash
-python collecting_data_opcua_old.py
+python collecting_profinet.py
 ```
 
 > (You can adapt this command if using another acquisition script.)
@@ -104,7 +104,7 @@ python collecting_data_opcua_old.py
 
 ### Configuration
 
-Inside the code (`collecting_data_opcua_old.py`), you can modify:
+Inside the code (`collecting_profinet.py`), you can modify:
 
 - `plc_ip` → PLC IP address (e.g., `"192.168.0.10"`)
 - `rack`, `slot` → PLC hardware configuration
