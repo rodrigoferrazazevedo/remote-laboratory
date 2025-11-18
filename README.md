@@ -73,7 +73,7 @@ REMOTE-LABORATORY/
 Install dependencies with:
 
 ```bash
-pip install python-snap7 mysql-connector-python
+pip install -r requirements.txt
 ```
 
 ---
@@ -193,13 +193,28 @@ As rotas executam validações básicas e retornam códigos HTTP apropriados, fa
 
 ## Chatbot (LangChain)
 
-O diretório `chatbot/` contém um protótipo de agente que utiliza LangChain + GPT para conversar com os endpoints do `lab-manager`. Para usar:
+O diretório `chatbot/` contém um protótipo de agente que utiliza LangChain + GPT para conversar com os endpoints REST do `lab-manager`. Tudo que precisa está descrito aqui, para manter a documentação centralizada:
 
-1. Instale as dependências: `pip install -r chatbot/requirements.txt`
-2. Garanta que o Flask esteja rodando (`python lab-manager/plant_config_app.py`)
-3. Exporte `OPENAI_API_KEY` e rode `python -m chatbot.main`
+- **Pré-requisitos**
+  - Python 3.9+
+  - Servidor Flask/API ativo: `python lab-manager/plant_config_app.py`
+  - Dependências instaladas: `pip install -r requirements.txt`
+  - Variáveis de ambiente:
+    - `OPENAI_API_KEY` (obrigatória)
+    - `CHATBOT_API_BASE` (opcional, padrão `http://localhost:5000/api`)
 
-O agente reconhece comandos como “listar experimentos”, “cadastrar padrão do professor” etc., chamando as ferramentas declaradas em `chatbot/tools.py`.
+- **Execução**
+  1. Ative seu virtualenv e exporte as variáveis acima.
+  2. Com o Flask rodando, execute `python -m chatbot.main`.
+  3. No prompt interativo, faça perguntas do tipo “listar experimentos”, “criar experimento test” ou “listar padrões do professor”. O agente decide quando chamar as ferramentas definidas em `chatbot/tools.py`.
+  4. Encerre com `Ctrl+C` ou `Ctrl+D`.
+
+- **Arquivos principais**
+  - `chatbot/main.py`: configura o LLM (`ChatOpenAI`) e o agente LangChain.
+  - `chatbot/tools.py`: cliente HTTP com as funções `list_experiments`, `create_ground_truth` etc.
+  - `chatbot/settings.py`: leitura de variáveis de ambiente e configurações padrão.
+
+Adapte conforme necessário (logs, autenticação, UI própria). O objetivo é servir de base para integrar um chatbot aos dados do laboratório remoto.
 
 ---
 

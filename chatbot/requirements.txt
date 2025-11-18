@@ -1,4 +1,0 @@
-langchain
-langchain-openai
-httpx
-python-dotenv
