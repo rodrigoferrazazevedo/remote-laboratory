@@ -191,6 +191,18 @@ As rotas executam validações básicas e retornam códigos HTTP apropriados, fa
 
 ---
 
+## Chatbot (LangChain)
+
+O diretório `chatbot/` contém um protótipo de agente que utiliza LangChain + GPT para conversar com os endpoints do `lab-manager`. Para usar:
+
+1. Instale as dependências: `pip install -r chatbot/requirements.txt`
+2. Garanta que o Flask esteja rodando (`python lab-manager/plant_config_app.py`)
+3. Exporte `OPENAI_API_KEY` e rode `python -m chatbot.main`
+
+O agente reconhece comandos como “listar experimentos”, “cadastrar padrão do professor” etc., chamando as ferramentas declaradas em `chatbot/tools.py`.
+
+---
+
 ## .gitignore
 
 All unnecessary files (such as cache, virtual environments, local settings, etc.) are already excluded from Git tracking.
