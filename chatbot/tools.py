@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Dict
 
 import httpx
+from langchain_core.tools import Tool
 
 from .settings import settings
 
@@ -43,8 +44,6 @@ class APIClient:
 
 
 def build_tools(client: APIClient):
-    from langchain.tools import Tool
-
     return [
         Tool(
             name="list_experiments",

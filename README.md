@@ -200,11 +200,11 @@ O diretório `chatbot/` contém um protótipo de agente que utiliza LangChain + 
   - Servidor Flask/API ativo: `python lab-manager/plant_config_app.py`
   - Dependências instaladas: `pip install -r requirements.txt`
   - Variáveis de ambiente:
-    - `OPENAI_API_KEY` (obrigatória)
+    - `OPENAI_API_KEY` (obrigatória; exporte no terminal ou adicione em `~/.zshrc`)
     - `CHATBOT_API_BASE` (opcional, padrão `http://localhost:5000/api`)
 
 - **Execução**
-  1. Ative seu virtualenv e exporte as variáveis acima.
+  1. Ative seu virtualenv e exporte a chave: `export OPENAI_API_KEY="sua-chave"`. (Opcional: `export CHATBOT_API_BASE="http://localhost:5000/api"` se quiser outro host.)
   2. Com o Flask rodando, execute `python -m chatbot.main`.
   3. No prompt interativo, faça perguntas do tipo “listar experimentos”, “criar experimento test” ou “listar padrões do professor”. O agente decide quando chamar as ferramentas definidas em `chatbot/tools.py`.
   4. Encerre com `Ctrl+C` ou `Ctrl+D`.
