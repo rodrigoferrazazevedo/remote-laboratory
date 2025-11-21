@@ -4,6 +4,7 @@ import json
 import os
 from typing import List
 
+import httpx
 from langchain.agents import create_agent
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_openai import ChatOpenAI
@@ -33,6 +34,19 @@ def _print_last_ai_message(messages: List[BaseMessage]) -> None:
         print(content)
 
 
+def _check_api_health(client: APIClient) -> bool:
+    try:
+        client.list_experiments()
+        return True
+    except httpx.HTTPError as exc:
+        print(
+            f"API indisponível em {client.base_url}. "
+            "Garanta que o Flask esteja rodando e que o banco esteja acessível. "
+            f"Detalhe: {exc}"
+        )
+        return False
+
+
 def main() -> None:
     api_key = os.environ.get("OPENAI_API_KEY") or settings.openai_api_key
     if not api_key:
@@ -40,6 +54,8 @@ def main() -> None:
     os.environ.setdefault("OPENAI_API_KEY", api_key)
 
     client = APIClient()
+    if not _check_api_health(client):
+        return
     tools = build_tools(client)
     agent = build_agent(tools)
 
@@ -58,6 +74,12 @@ def main() -> None:
             result = agent.invoke({"messages": messages})
             messages = result["messages"]
             _print_last_ai_message(messages)
+        except httpx.HTTPError as exc:
+            print(
+                f"API indisponível em {client.base_url}. "
+                "Garanta que o Flask esteja rodando e que o banco esteja acessível. "
+                f"Detalhe: {exc}"
+            )
         except Exception as exc:
             print(f"Erro: {exc}")
 
