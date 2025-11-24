@@ -44,15 +44,36 @@ def _get_dao() -> RemoteLaboratoryDAO:
     return RemoteLaboratoryDAO()
 
 
-def _require_openai_key() -> str:
-    api_key = os.environ.get("OPENAI_API_KEY") or chatbot_settings.openai_api_key
-    if not api_key:
-        raise RuntimeError("Defina a variável de ambiente OPENAI_API_KEY antes de usar o chatbot.")
-    return api_key
+def _resolve_openai_key(dao: RemoteLaboratoryDAO) -> str:
+    settings = dao.get_ai_key_settings() or {}
+    source = settings.get("source") or "system_variable"
+    env_key = os.environ.get("OPENAI_API_KEY") or chatbot_settings.openai_api_key
+
+    if source == "manual":
+        manual_key, invalid = dao.load_manual_ai_key()
+        if manual_key:
+            return manual_key
+        if invalid:
+            print("Aviso: AI Key manual corrompida. Limparei o registro para permitir novo cadastro.")
+            dao.clear_ai_key_settings()
+        raise RuntimeError("Nenhuma AI Key manual salva. Cadastre-a na tela de Configurações.")
+
+    if env_key:
+        return env_key
+
+    # Fallback: se não houver env mas existir manual cadastrada, usa-a.
+    manual_key = dao.get_manual_ai_key()
+    if manual_key:
+        return manual_key
+
+    raise RuntimeError(
+        "Defina a variável de ambiente OPENAI_API_KEY ou cadastre a AI Key manualmente na tela de Configurações."
+    )
 
 
 def _build_chat_agent():
-    api_key = _require_openai_key()
+    dao = _get_dao()
+    api_key = _resolve_openai_key(dao)
     os.environ.setdefault("OPENAI_API_KEY", api_key)
     client = APIClient()
     try:
@@ -64,7 +85,7 @@ def _build_chat_agent():
             f"Detalhe: {exc}"
         ) from exc
     tools = build_tools(client)
-    return build_agent(tools)
+    return build_agent(tools, api_key)
 
 
 def _parse_history(payload: List[Dict[str, Any]]) -> List[BaseMessage]:
@@ -85,6 +106,14 @@ def _last_ai_message(messages: List[BaseMessage]) -> str:
     if isinstance(content, (dict, list)):
         return json.dumps(content, ensure_ascii=False)
     return str(content)
+
+
+def _ai_key_form_state(dao: RemoteLaboratoryDAO) -> Dict[str, Any]:
+    settings = dao.get_ai_key_settings() or {}
+    return {
+        "source": settings.get("source") or "system_variable",
+        "has_manual": bool(settings.get("encrypted_key")),
+    }
 
 
 def _collect_form_data() -> Dict[str, str]:
@@ -145,6 +174,46 @@ def _validate_ground_truth_form_data(form_data: Dict[str, str]) -> List[str]:
     if not form_data["ground_truth"]:
         errors.append("O padrão é obrigatório.")
     return errors
+
+
+@app.route("/settings/ai-key", methods=["GET", "POST"])
+def ai_key_settings():
+    dao = _get_dao()
+    state = _ai_key_form_state(dao)
+    form = {"source": state["source"], "manual_key": ""}
+    has_manual_key = state["has_manual"]
+
+    if request.method == "POST":
+        selected_source = (request.form.get("ai_key_source") or "system_variable").strip()
+        manual_key = (request.form.get("manual_key") or "").strip()
+        errors: List[str] = []
+
+        if selected_source not in ("system_variable", "manual"):
+            errors.append("Selecione uma opção válida para AI Key.")
+        if selected_source == "manual" and not manual_key:
+            errors.append("Informe a AI Key quando a opção Inserida manualmente estiver selecionada.")
+
+        if not errors:
+            try:
+                saved = dao.save_ai_key_settings(selected_source, manual_key)
+            except Exception as exc:
+                flash(f"Erro ao salvar a AI Key: {exc}", "error")
+            else:
+                if saved:
+                    flash("Configuração de AI Key salva com sucesso.", "success")
+                    return redirect(url_for("ai_key_settings"))
+                flash("Não foi possível salvar a AI Key.", "error")
+        for error in errors:
+            flash(error, "error")
+        form = {"source": selected_source, "manual_key": manual_key}
+        has_manual_key = has_manual_key or (selected_source == "manual" and bool(manual_key))
+
+    return render_template(
+        "settings/ai_key.html",
+        title="Configurações",
+        form=form,
+        has_manual_key=has_manual_key,
+    )
 
 
 @app.route("/")
@@ -336,7 +405,12 @@ def delete_ground_truth(pattern_id: int):
 
 @app.route("/chatbot")
 def chatbot_page():
-    openai_ready = bool(os.environ.get("OPENAI_API_KEY") or chatbot_settings.openai_api_key)
+    dao = _get_dao()
+    try:
+        _resolve_openai_key(dao)
+        openai_ready = True
+    except Exception:
+        openai_ready = False
     return render_template(
         "chatbot/index.html",
         title="Chatbot",

@@ -44,3 +44,12 @@ CREATE TABLE `ground_truth_patterns` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_experiment_name` (`experiment_name`)
 );
+
+-- 4) ai_settings
+CREATE TABLE `ai_settings` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `source` VARCHAR(32) NOT NULL,
+  `encrypted_key` TEXT DEFAULT NULL,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+);

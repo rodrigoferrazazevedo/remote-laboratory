@@ -1,8 +1,16 @@
+import base64
+import hashlib
 import json
 import os
 import sqlite3
 from pathlib import Path
 from typing import Any, Optional, Sequence
+
+try:
+    from cryptography.fernet import Fernet, InvalidToken
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    Fernet = None  # type: ignore[assignment]
+    InvalidToken = Exception  # type: ignore[assignment]
 
 try:
     import mysql.connector
@@ -29,6 +37,7 @@ class RemoteLaboratoryDAO:
             "user": os.environ.get("MYSQL_USER", "root"),
             "password": os.environ.get("MYSQL_PASSWORD", ""),
         }
+        self._fernet = None
         sqlite_path = os.environ.get("SQLITE_DB_PATH")
         self.sqlite_path = self._resolve_sqlite_path(sqlite_path)
         self._db_errors = (MySQLError, sqlite3.Error)
@@ -84,9 +93,76 @@ class RemoteLaboratoryDAO:
                 )
                 """
             )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS ai_settings (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    source TEXT NOT NULL,
+                    encrypted_key TEXT,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+                """
+            )
             conn.commit()
         finally:
             conn.close()
+
+    def _build_fernet(self) -> Fernet:
+        """
+        Deriva chave simétrica a partir de uma variável de ambiente.
+
+        Usa AI_KEY_SECRET quando presente, caso contrário cai para FLASK_SECRET_KEY.
+        """
+        if Fernet is None:
+            raise ImportError("A dependência 'cryptography' é obrigatória para criptografar a AI Key.")
+        secret = os.environ.get("AI_KEY_SECRET") or os.environ.get("FLASK_SECRET_KEY") or "remote-lab-dev"
+        digest = hashlib.sha256(secret.encode()).digest()
+        key = base64.urlsafe_b64encode(digest)
+        return Fernet(key)
+
+    def _get_fernet(self) -> Fernet:
+        if self._fernet is None:
+            self._fernet = self._build_fernet()
+        return self._fernet
+
+    def _encrypt(self, value: str) -> str:
+        return self._get_fernet().encrypt(value.encode()).decode()
+
+    def _decrypt(self, value: str) -> Optional[str]:
+        if not value:
+            return None
+        try:
+            return self._get_fernet().decrypt(value.encode(), ttl=None).decode()
+        except InvalidToken:
+            print("Token de AI Key inválido ou corrompido.")
+            return None
+
+    def _ensure_ai_settings_table(self, cursor) -> None:
+        if self.db_backend == "sqlite":
+            self._execute(
+                cursor,
+                """
+                CREATE TABLE IF NOT EXISTS ai_settings (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    source TEXT NOT NULL,
+                    encrypted_key TEXT,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+                """,
+            )
+        else:
+            self._execute(
+                cursor,
+                """
+                CREATE TABLE IF NOT EXISTS ai_settings (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    source VARCHAR(32) NOT NULL,
+                    encrypted_key TEXT,
+                    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    PRIMARY KEY (id)
+                )
+                """,
+            )
 
     def _prepare_query(self, query: str) -> str:
         if self.db_backend == "sqlite":
@@ -600,6 +676,117 @@ class RemoteLaboratoryDAO:
         except self._db_errors as e:
             print(f"Erro ao deletar o padrão do professor: {e}")
             return False
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    # -----------------------------
+    # Configuração de AI Key
+    # -----------------------------
+
+    def save_ai_key_settings(self, source: str, raw_key: Optional[str]) -> bool:
+        """
+        source: 'system_variable' ou 'manual'.
+        raw_key: chave em texto plano quando manual.
+        """
+        if source not in ("system_variable", "manual"):
+            raise ValueError("Fonte da AI Key inválida.")
+        if source == "manual" and not raw_key:
+            raise ValueError("Informe a AI Key quando a opção manual for selecionada.")
+        encrypted_key = self._encrypt(raw_key) if source == "manual" and raw_key else None
+
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            self._ensure_ai_settings_table(cursor)
+            # Mantém a tabela com apenas um registro.
+            self._execute(cursor, "DELETE FROM ai_settings")
+            self._execute(
+                cursor,
+                """
+                INSERT INTO ai_settings (source, encrypted_key)
+                VALUES (%s, %s)
+                """,
+                (source, encrypted_key),
+            )
+            mydb.commit()
+            return True
+        except self._db_errors as e:
+            print(f"Erro ao salvar a AI Key: {e}")
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    def get_ai_key_settings(self):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            if self.db_backend == "sqlite":
+                cursor = mydb.cursor()
+            else:
+                cursor = mydb.cursor(dictionary=True)
+            self._ensure_ai_settings_table(cursor)
+            self._execute(
+                cursor,
+                """
+                SELECT source, encrypted_key
+                FROM ai_settings
+                ORDER BY updated_at DESC
+                LIMIT 1
+                """,
+            )
+            row = cursor.fetchone()
+            return self._dict_row(row)
+        except self._db_errors as e:
+            print(f"Erro ao buscar configurações de AI Key: {e}")
+            return None
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    def get_manual_ai_key(self) -> Optional[str]:
+        settings = self.get_ai_key_settings()
+        key, _ = self.load_manual_ai_key()
+        return key
+
+    def load_manual_ai_key(self):
+        """
+        Returns (key, invalid_token_flag).
+        """
+        settings = self.get_ai_key_settings()
+        if not settings or settings.get("source") != "manual":
+            return None, False
+        encrypted_value = settings.get("encrypted_key")
+        if not encrypted_value:
+            return None, False
+        try:
+            value = self._get_fernet().decrypt(encrypted_value.encode(), ttl=None).decode()
+            return value, False
+        except InvalidToken:
+            print("Token de AI Key inválido ou corrompido.")
+            return None, True
+
+    def clear_ai_key_settings(self) -> None:
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            self._ensure_ai_settings_table(cursor)
+            self._execute(cursor, "DELETE FROM ai_settings")
+            mydb.commit()
+        except self._db_errors as e:
+            print(f"Erro ao limpar AI Key: {e}")
         finally:
             if cursor:
                 cursor.close()

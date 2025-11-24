@@ -47,32 +47,32 @@ def build_tools(client: APIClient):
     return [
         Tool(
             name="list_experiments",
-            func=lambda: client.list_experiments(),
+            func=lambda *_args, **_kwargs: client.list_experiments(),
             description="Lista todos os experimentos cadastrados",
         ),
         Tool(
             name="create_experiment",
-            func=lambda payload: client.create_experiment(payload),
+            func=lambda payload, *_args, **_kwargs: client.create_experiment(payload),
             description="Cria um experimento. Espera dict com experiment_name, ip_profinet, rack_profinet, slot_profinet, db_number_profinet, num_of_inputs, num_of_outputs.",
         ),
         Tool(
             name="delete_experiment",
-            func=lambda experiment_id: client.delete_experiment(int(experiment_id)),
+            func=lambda experiment_id, *_args, **_kwargs: client.delete_experiment(int(experiment_id)),
             description="Remove um experimento existente. Informe o ID.",
         ),
         Tool(
             name="list_ground_truth",
-            func=lambda: client.list_ground_truth(),
+            func=lambda *_args, **_kwargs: client.list_ground_truth(),
             description="Lista padrões cadastrados do professor.",
         ),
         Tool(
             name="create_ground_truth",
-            func=lambda payload: client.create_ground_truth(payload),
+            func=lambda payload, *_args, **_kwargs: client.create_ground_truth(payload),
             description="Cria padrão do professor. Espera dict com experiment_name e ground_truth.",
         ),
         Tool(
             name="delete_ground_truth",
-            func=lambda pattern_id: client.delete_ground_truth(int(pattern_id)),
+            func=lambda pattern_id, *_args, **_kwargs: client.delete_ground_truth(int(pattern_id)),
             description="Remove padrão do professor pelo ID.",
         ),
     ]

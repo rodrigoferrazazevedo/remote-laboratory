@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    select { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-family: inherit; }
+    .helper { font-size: 0.9rem; color: #4b5563; margin-top: 4px; }
+</style>
+<div class="card">
+    <h2 style="margin-top: 0;">Configurações de AI Key</h2>
+    <p style="color: #4b5563;">Escolha se a AI Key virá da variável de ambiente OPENAI_API_KEY ou se será informada manualmente e armazenada de forma criptografada.</p>
+    <form method="post">
+        <div class="form-grid">
+            <div class="full-width">
+                <label for="ai_key_source">AI Key</label>
+                <select id="ai_key_source" name="ai_key_source">
+                    <option value="system_variable" {% if form.source == 'system_variable' %}selected{% endif %}>Variável do Sistema</option>
+                    <option value="manual" {% if form.source == 'manual' %}selected{% endif %}>Inserida manualmente</option>
+                </select>
+            </div>
+            <div class="full-width">
+                <label for="manual_key">Chave</label>
+                <input type="password" id="manual_key" name="manual_key" placeholder="sk-..." value="{{ form.manual_key or '' }}">
+                <div class="helper">
+                    {% if has_manual_key %}
+                        Uma AI Key manual já está salva de forma segura. Informe uma nova para substituir.
+                    {% else %}
+                        Preencha somente se a opção "Inserida manualmente" estiver selecionada.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="actions">
+            <button type="submit">Salvar</button>
+            <a class="button secondary" href="{{ url_for('index') }}">Voltar</a>
+        </div>
+    </form>
+</div>
+<script>
+    const sourceSelect = document.getElementById('ai_key_source');
+    const manualInput = document.getElementById('manual_key');
+    const toggleManual = () => {
+        const manual = sourceSelect.value === 'manual';
+        manualInput.disabled = !manual;
+        manualInput.required = manual;
+        manualInput.placeholder = manual ? 'Insira a AI Key' : 'Selecione "Inserida manualmente"';
+        if (!manual) {
+            manualInput.value = '';
+        }
+    };
+    sourceSelect.addEventListener('change', toggleManual);
+    toggleManual();
+</script>
+{% endblock %}
