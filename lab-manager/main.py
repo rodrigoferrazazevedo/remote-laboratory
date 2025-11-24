@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 from pathlib import Path
@@ -14,13 +15,23 @@ from flask import (
     request,
     url_for,
 )
-
+import httpx
+from langchain_core.messages import (
+    AIMessage,
+    BaseMessage,
+    HumanMessage,
+    messages_from_dict,
+    messages_to_dict,
+)
 
 BOT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BOT_DIR.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from chatbot.main import build_agent  # noqa: E402  (import after sys.path tweak)
+from chatbot.settings import settings as chatbot_settings  # noqa: E402
+from chatbot.tools import APIClient, build_tools  # noqa: E402
 from src.db_dao import RemoteLaboratoryDAO  # noqa: E402  (import after sys.path tweak)
 
 
@@ -31,6 +42,49 @@ api = Blueprint("api", __name__, url_prefix="/api")
 
 def _get_dao() -> RemoteLaboratoryDAO:
     return RemoteLaboratoryDAO()
+
+
+def _require_openai_key() -> str:
+    api_key = os.environ.get("OPENAI_API_KEY") or chatbot_settings.openai_api_key
+    if not api_key:
+        raise RuntimeError("Defina a variável de ambiente OPENAI_API_KEY antes de usar o chatbot.")
+    return api_key
+
+
+def _build_chat_agent():
+    api_key = _require_openai_key()
+    os.environ.setdefault("OPENAI_API_KEY", api_key)
+    client = APIClient()
+    try:
+        client.list_experiments()
+    except httpx.HTTPError as exc:
+        raise RuntimeError(
+            f"API indisponível em {client.base_url}. "
+            "Garanta que o Flask esteja rodando e que o banco esteja acessível. "
+            f"Detalhe: {exc}"
+        ) from exc
+    tools = build_tools(client)
+    return build_agent(tools)
+
+
+def _parse_history(payload: List[Dict[str, Any]]) -> List[BaseMessage]:
+    if not payload:
+        return []
+    return list(messages_from_dict(payload))
+
+
+def _serialize_messages(messages: List[BaseMessage]) -> List[Dict[str, Any]]:
+    return messages_to_dict(messages)
+
+
+def _last_ai_message(messages: List[BaseMessage]) -> str:
+    last_ai = next((m for m in reversed(messages) if isinstance(m, AIMessage)), None)
+    if not last_ai:
+        return ""
+    content = last_ai.content
+    if isinstance(content, (dict, list)):
+        return json.dumps(content, ensure_ascii=False)
+    return str(content)
 
 
 def _collect_form_data() -> Dict[str, str]:
@@ -280,6 +334,46 @@ def delete_ground_truth(pattern_id: int):
     return redirect(url_for("ground_truth_index"))
 
 
+@app.route("/chatbot")
+def chatbot_page():
+    openai_ready = bool(os.environ.get("OPENAI_API_KEY") or chatbot_settings.openai_api_key)
+    return render_template(
+        "chatbot/index.html",
+        title="Chatbot",
+        api_base=chatbot_settings.api_base,
+        openai_ready=openai_ready,
+    )
+
+
+@app.post("/chatbot/ask")
+def chatbot_ask():
+    data = request.get_json(silent=True) or {}
+    user_input = (data.get("message") or "").strip()
+    if not user_input:
+        return jsonify({"error": "A mensagem não pode ser vazia."}), 400
+    history_payload = data.get("history") or []
+    try:
+        history = _parse_history(history_payload)
+    except Exception:
+        return jsonify({"error": "Histórico de mensagens inválido."}), 400
+
+    try:
+        agent = _build_chat_agent()
+    except RuntimeError as exc:
+        return jsonify({"error": str(exc)}), 400
+
+    try:
+        result = agent.invoke({"messages": [*history, HumanMessage(content=user_input)]})
+    except httpx.HTTPError as exc:
+        return jsonify({"error": f"Erro ao acessar a API: {exc}"}), 502
+    except Exception as exc:
+        return jsonify({"error": f"Erro ao executar o chatbot: {exc}"}), 500
+
+    messages = result["messages"]
+    reply = _last_ai_message(messages)
+    return jsonify({"reply": reply, "history": _serialize_messages(messages)})
+
+
 @api.get("/experiments")
 def api_list_experiments():
     dao = _get_dao()
@@ -414,7 +508,9 @@ def api_delete_ground_truth(pattern_id: int):
 app.register_blueprint(api)
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(debug=True, threaded=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5001)))
+
+
 def _json_payload():
     data = request.get_json(silent=True)
     if data is None:

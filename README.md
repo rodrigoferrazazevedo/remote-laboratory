@@ -49,7 +49,7 @@ REMOTE-LABORATORY/
 ├── src/
 │    └── db_dao.py             # Database access object (RemoteLaboratoryDAO)
 ├── lab-manager/              # Flask UI + REST API for experiment/pattern management
-│    ├── plant_config_app.py
+│    ├── main.py
 │    ├── templates/
 │    └── readfiles.py
 ├── collecting_data_opcua_old.py  # [legacy] Script for OPC UA communication
@@ -144,14 +144,14 @@ export SQLITE_DB_PATH=/abs/path/para/remote_lab.sqlite3
 - Quando `DB_BACKEND=sqlite`, o arquivo informado em `SQLITE_DB_PATH` é criado automaticamente (padrão: `data/remote_lab.sqlite3`) e todas as consultas passam a usar o driver embutido `sqlite3`.
 - Certifique-se de apontar `SQLITE_DB_PATH` para um local com permissão de escrita. Se for um caminho inválido, o DAO volta automaticamente para `data/remote_lab.sqlite3`.
 
-Essa configuração vale automaticamente para toda a aplicação Flask (`lab-manager/plant_config_app.py`) e para os scripts que utilizam `RemoteLaboratoryDAO`.
+Essa configuração vale automaticamente para toda a aplicação Flask (`lab-manager/main.py`) e para os scripts que utilizam `RemoteLaboratoryDAO`.
 
 ---
 
 ### Web managers (Flask)
 
-- **Gerenciador de Experimentos** – disponível em `http://localhost:5000/` – lista/cria/edita/exclui registros da tabela `plant_config`.
-- **Gerenciador de Padrões do Professor** – disponível em `http://localhost:5000/ground-truth` – manipula os dados de `ground_truth_patterns`, permitindo cadastrar os padrões vindos do script `patterns_from_professor.sql` diretamente da interface web.
+- **Gerenciador de Experimentos** – disponível em `http://localhost:5001/` – lista/cria/edita/exclui registros da tabela `plant_config`.
+- **Gerenciador de Padrões do Professor** – disponível em `http://localhost:5001/ground-truth` – manipula os dados de `ground_truth_patterns`, permitindo cadastrar os padrões vindos do script `patterns_from_professor.sql` diretamente da interface web.
 
 Ambos os módulos compartilham o mesmo backend (MySQL ou SQLite), então qualquer alteração via UI é automaticamente refletida no banco correspondente.
 
@@ -159,7 +159,7 @@ Ambos os módulos compartilham o mesmo backend (MySQL ou SQLite), então qualque
 
 ### REST API
 
-O mesmo aplicativo (`lab-manager/plant_config_app.py`) expõe um blueprint JSON em `http://localhost:5000/api`. Principais rotas:
+O mesmo aplicativo (`lab-manager/main.py`) expõe um blueprint JSON em `http://localhost:5001/api`. Principais rotas:
 
 - `GET /api/experiments` / `POST /api/experiments` / `GET|PUT|DELETE /api/experiments/<id>` para listar, criar e administrar entradas em `plant_config`.
 - `GET /api/ground-truth` / `POST /api/ground-truth` / `GET|PUT|DELETE /api/ground-truth/<id>` para gerenciar `ground_truth_patterns`.
@@ -197,14 +197,14 @@ O diretório `chatbot/` contém um protótipo de agente que utiliza LangChain + 
 
 - **Pré-requisitos**
   - Python 3.9+
-  - Servidor Flask/API ativo: `python lab-manager/plant_config_app.py`
+  - Servidor Flask/API ativo: `python lab-manager/main.py`
   - Dependências instaladas: `pip install -r requirements.txt`
   - Variáveis de ambiente:
     - `OPENAI_API_KEY` (obrigatória; exporte no terminal ou adicione em `~/.zshrc`)
-    - `CHATBOT_API_BASE` (opcional, padrão `http://localhost:5000/api`)
+    - `CHATBOT_API_BASE` (opcional, padrão `http://localhost:5001/api`)
 
 - **Execução**
-  1. Ative seu virtualenv e exporte a chave: `export OPENAI_API_KEY="sua-chave"`. (Opcional: `export CHATBOT_API_BASE="http://localhost:5000/api"` se quiser outro host.)
+  1. Ative seu virtualenv e exporte a chave: `export OPENAI_API_KEY="sua-chave"`. (Opcional: `export CHATBOT_API_BASE="http://localhost:5001/api"` se quiser outro host.)
   2. Com o Flask rodando, execute `python -m chatbot.main` (ou prefixe em uma única linha: `OPENAI_API_KEY="sua-chave" python -m chatbot.main`).
   3. No prompt interativo, faça perguntas do tipo “listar experimentos”, “criar experimento test” ou “listar padrões do professor”. O agente decide quando chamar as ferramentas definidas em `chatbot/tools.py`.
   4. Encerre com `Ctrl+C` ou `Ctrl+D`.

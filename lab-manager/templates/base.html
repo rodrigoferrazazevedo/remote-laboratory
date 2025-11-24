@@ -42,6 +42,7 @@
             <nav>
                 <a href="{{ url_for('index') }}" class="{% if endpoint in ['index','create_config','edit_config'] %}active{% endif %}">Experimentos</a>
                 <a href="{{ url_for('ground_truth_index') }}" class="{% if endpoint in ['ground_truth_index','create_ground_truth','edit_ground_truth'] %}active{% endif %}">Padrões do Professor</a>
+                <a href="{{ url_for('chatbot_page') }}" class="{% if endpoint in ['chatbot_page'] %}active{% endif %}">Chatbot</a>
             </nav>
         </div>
     </header>
