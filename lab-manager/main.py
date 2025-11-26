@@ -579,6 +579,17 @@ def api_delete_ground_truth(pattern_id: int):
     return jsonify({"deleted": True})
 
 
+@app.route("/dados-coletados")
+def collected_data():
+    dao = _get_dao()
+    rows = dao.list_collected_data()
+    return render_template(
+        "collected_data/index.html",
+        title="Dados coletados",
+        rows=rows,
+    )
+
+
 app.register_blueprint(api)
 
 if __name__ == "__main__":

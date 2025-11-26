@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .nowrap { white-space: nowrap; }
+    .truncate { max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; }
+    .mono { font-family: monospace; }
+</style>
+<div class="card">
+    <div style="display:flex; justify-content: space-between; align-items:center; gap: 12px; flex-wrap: wrap;">
+        <h2 style="margin: 0;">Dados coletados</h2>
+        <span style="color: #4b5563; font-size: 0.95rem;">Mostrando últimos {{ rows|length }} registros (ordem decrescente por ID).</span>
+    </div>
+
+    {% if rows %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Experimento</th>
+                <th>Exp. ID</th>
+                <th>Step</th>
+                <th>Pulse train</th>
+                <th>Pulse value</th>
+                <th>Time to change</th>
+                <th>Duração</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td class="nowrap">{{ row.id }}</td>
+                <td>{{ row.experimentName or '' }}</td>
+                <td class="nowrap">{{ row.experiment_id }}</td>
+                <td class="mono truncate" title="{{ row.step }}">{{ row.step }}</td>
+                <td class="mono truncate" title="{{ row.pulse_train }}">{{ row.pulse_train }}</td>
+                <td class="nowrap">{{ row.pulse_value }}</td>
+                <td class="nowrap">{{ row.timeToChange }}</td>
+                <td class="nowrap">{{ row.duration or '-' }}</td>
+                <td class="nowrap">{{ row.time_stamp or '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Nenhum dado coletado encontrado.</p>
+    {% endif %}
+</div>
+{% endblock %}
