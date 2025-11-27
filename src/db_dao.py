@@ -103,6 +103,30 @@ class RemoteLaboratoryDAO:
                 )
                 """
             )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS dadoscoletados2 (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    experiment_id INTEGER NOT NULL,
+                    step TEXT,
+                    pulse_train TEXT,
+                    pulse_value REAL,
+                    experimentName TEXT,
+                    timeToChange REAL,
+                    duration REAL,
+                    time_stamp TEXT
+                )
+                """
+            )
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS dadoscoletados_summary (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    experiment_id INTEGER NOT NULL,
+                    pattern TEXT NOT NULL
+                )
+                """
+            )
             conn.commit()
         finally:
             conn.close()
