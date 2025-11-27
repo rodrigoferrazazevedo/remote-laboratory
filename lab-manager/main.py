@@ -740,6 +740,8 @@ def collected_data():
         title="Dados coletados",
         rows=rows,
         experiments=experiments,
+        correction_result=None,
+        correction_error=None,
     )
 
 
@@ -781,6 +783,79 @@ def import_collected_data():
     else:
         flash("Nenhum dado foi importado. Verifique o arquivo e tente novamente.", "error")
     return redirect(url_for("collected_data"))
+
+
+@app.post("/dados-coletados/correcao")
+def collected_data_correction():
+    experiment_id_raw = (request.form.get("experiment_id") or "").strip()
+    try:
+        experiment_id = int(experiment_id_raw)
+    except (TypeError, ValueError):
+        flash("Selecione um experimento válido para correção automática.", "error")
+        return redirect(url_for("collected_data"))
+
+    dao = _get_dao()
+    config = dao.get_plant_config_by_id(experiment_id)
+    if not config:
+        flash("Experimento não encontrado.", "error")
+        return redirect(url_for("collected_data"))
+
+    ground = dao.get_ground_truth_by_experiment(config["experiment_name"])
+    if not ground:
+        flash("Nenhum Padrão do Professor cadastrado para este experimento.", "error")
+        return redirect(url_for("collected_data"))
+
+    collected_rows = dao.list_collected_data_by_experiment(experiment_id, limit=500)
+    if not collected_rows:
+        flash("Nenhum dado coletado encontrado para este experimento.", "error")
+        return redirect(url_for("collected_data"))
+
+    ground_truth_raw = ground.get("ground_truth") if isinstance(ground, dict) else ground
+    try:
+        ground_truth_value = json.loads(ground_truth_raw)
+    except Exception:
+        ground_truth_value = ground_truth_raw
+
+    try:
+        agent = _build_chat_agent()
+    except RuntimeError as exc:
+        flash(str(exc), "error")
+        return redirect(url_for("collected_data"))
+
+    human_prompt = (
+        "Atue como um professor de engenharia. Compare o Padrão do Professor com os Dados Coletados do aluno. "
+        "Aponte diferenças (ordem dos passos, valores de passo, pulsos, tempos) e dê dicas práticas e objetivas."
+        "\n\nContexto em JSON:\n"
+        + json.dumps(
+            {
+                "experimento": config["experiment_name"],
+                "padrao_professor": ground_truth_value,
+                "dados_coletados": collected_rows,
+            },
+            ensure_ascii=False,
+        )
+    )
+
+    try:
+        result = agent.invoke({"messages": [HumanMessage(content=human_prompt)]})
+        reply = _last_ai_message(result["messages"])
+    except httpx.HTTPError as exc:
+        flash(f"Erro ao acessar a API: {exc}", "error")
+        return redirect(url_for("collected_data"))
+    except Exception as exc:
+        flash(f"Erro ao executar a correção automática: {exc}", "error")
+        return redirect(url_for("collected_data"))
+
+    rows = dao.list_collected_data()
+    experiments = dao.list_full_plant_configs()
+    return render_template(
+        "collected_data/index.html",
+        title="Dados coletados",
+        rows=rows,
+        experiments=experiments,
+        correction_result=reply,
+        correction_error=None,
+    )
 
 
 app.register_blueprint(api)

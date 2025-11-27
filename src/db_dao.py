@@ -937,6 +937,38 @@ class RemoteLaboratoryDAO:
             if mydb:
                 mydb.close()
 
+    def list_collected_data_by_experiment(self, experiment_id: int, limit: int = 500):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            if self.db_backend == "sqlite":
+                cursor = mydb.cursor()
+            else:
+                cursor = mydb.cursor(dictionary=True)
+            self._execute(
+                cursor,
+                """
+                SELECT id, experiment_id, experimentName, step, pulse_train, pulse_value,
+                       timeToChange, duration, time_stamp
+                FROM dadoscoletados2
+                WHERE experiment_id = %s
+                ORDER BY id ASC
+                LIMIT %s
+                """,
+                (experiment_id, limit),
+            )
+            rows = cursor.fetchall()
+            return self._dict_rows(rows)
+        except self._db_errors as e:
+            print(f"Erro ao buscar dados coletados do experimento {experiment_id}: {e}")
+            return []
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
     def import_collected_rows(
         self, experiment_id: int, experiment_name: str, rows: List[Dict[str, Any]]
     ) -> int:

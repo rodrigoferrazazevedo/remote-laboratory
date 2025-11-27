@@ -10,6 +10,9 @@
     .import-form select { padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 6px; min-width: 200px; }
     .import-form button { padding: 8px 14px; border: none; border-radius: 6px; background: #2563eb; color: white; font-weight: 600; cursor: pointer; }
     .import-form button:hover { background: #1d4ed8; }
+    .actions-row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 12px; align-items: flex-end; }
+    .correction-card { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 16px; }
+    .correction-card h3 { margin: 0 0 8px 0; }
 </style>
 <div class="card">
     <div style="display:flex; justify-content: space-between; align-items:center; gap: 12px; flex-wrap: wrap;">
@@ -17,22 +20,44 @@
         <span style="color: #4b5563; font-size: 0.95rem;">Mostrando últimos {{ rows|length }} registros (ordem decrescente por ID).</span>
     </div>
 
-    <form class="import-form" action="{{ url_for('import_collected_data') }}" method="POST" enctype="multipart/form-data">
-        <label>
-            Arquivo CSV
-            <input type="file" name="data_file" accept=".csv" required>
-        </label>
-        <label>
-            Experimento
-            <select name="experiment_id" required>
-                <option value="">Selecione</option>
-                {% for exp in experiments %}
-                    <option value="{{ exp.id }}">{{ exp.experiment_name }} (ID {{ exp.id }})</option>
-                {% endfor %}
-            </select>
-        </label>
-        <button type="submit">Importar dados</button>
-    </form>
+    <div class="actions-row">
+        <form class="import-form" action="{{ url_for('import_collected_data') }}" method="POST" enctype="multipart/form-data">
+            <label>
+                Arquivo CSV
+                <input type="file" name="data_file" accept=".csv" required>
+            </label>
+            <label>
+                Experimento
+                <select name="experiment_id" required>
+                    <option value="">Selecione</option>
+                    {% for exp in experiments %}
+                        <option value="{{ exp.id }}">{{ exp.experiment_name }} (ID {{ exp.id }})</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button type="submit">Importar dados</button>
+        </form>
+
+        <form class="import-form" action="{{ url_for('collected_data_correction') }}" method="POST">
+            <label>
+                Experimento para correção
+                <select name="experiment_id" required>
+                    <option value="">Selecione</option>
+                    {% for exp in experiments %}
+                        <option value="{{ exp.id }}">{{ exp.experiment_name }} (ID {{ exp.id }})</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <button type="submit">Correção Automática</button>
+        </form>
+    </div>
+
+    {% if correction_result %}
+    <div class="correction-card">
+        <h3>Correção automática</h3>
+        <pre style="white-space: pre-wrap; word-break: break-word; margin: 0;">{{ correction_result }}</pre>
+    </div>
+    {% endif %}
 
     {% if rows %}
     <table>
