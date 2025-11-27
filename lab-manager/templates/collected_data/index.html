@@ -4,12 +4,35 @@
     .nowrap { white-space: nowrap; }
     .truncate { max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; }
     .mono { font-family: monospace; }
+    .import-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 16px; }
+    .import-form label { display: flex; flex-direction: column; font-weight: 600; color: #111827; font-size: 0.95rem; }
+    .import-form input,
+    .import-form select { padding: 6px 8px; border: 1px solid #d1d5db; border-radius: 6px; min-width: 200px; }
+    .import-form button { padding: 8px 14px; border: none; border-radius: 6px; background: #2563eb; color: white; font-weight: 600; cursor: pointer; }
+    .import-form button:hover { background: #1d4ed8; }
 </style>
 <div class="card">
     <div style="display:flex; justify-content: space-between; align-items:center; gap: 12px; flex-wrap: wrap;">
         <h2 style="margin: 0;">Dados coletados</h2>
         <span style="color: #4b5563; font-size: 0.95rem;">Mostrando últimos {{ rows|length }} registros (ordem decrescente por ID).</span>
     </div>
+
+    <form class="import-form" action="{{ url_for('import_collected_data') }}" method="POST" enctype="multipart/form-data">
+        <label>
+            Arquivo CSV
+            <input type="file" name="data_file" accept=".csv" required>
+        </label>
+        <label>
+            Experimento
+            <select name="experiment_id" required>
+                <option value="">Selecione</option>
+                {% for exp in experiments %}
+                    <option value="{{ exp.id }}">{{ exp.experiment_name }} (ID {{ exp.id }})</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit">Importar dados</button>
+    </form>
 
     {% if rows %}
     <table>

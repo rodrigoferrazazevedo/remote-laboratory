@@ -4,7 +4,7 @@ import json
 import os
 import sqlite3
 from pathlib import Path
-from typing import Any, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
 try:
     from cryptography.fernet import Fernet, InvalidToken
@@ -632,6 +632,91 @@ class RemoteLaboratoryDAO:
             if mydb:
                 mydb.close()
 
+    def upsert_ground_truth_pattern(self, experiment_name: str, ground_truth: str):
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            if self.db_backend == "sqlite":
+                query = """
+                INSERT INTO ground_truth_patterns (experiment_name, ground_truth)
+                VALUES (%s, %s)
+                ON CONFLICT(experiment_name) DO UPDATE SET ground_truth=excluded.ground_truth
+                """
+            else:
+                query = """
+                INSERT INTO ground_truth_patterns (experiment_name, ground_truth)
+                VALUES (%s, %s)
+                ON DUPLICATE KEY UPDATE ground_truth=VALUES(ground_truth)
+                """
+            self._execute(cursor, query, (experiment_name, ground_truth))
+            mydb.commit()
+            return cursor.rowcount
+        except self._db_errors as e:
+            print(f"Erro ao salvar o padrão do professor: {e}")
+            return 0
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    def import_ground_truth_patterns(
+        self, rows: List[Dict[str, str]], allowed_experiments: Optional[Set[str]] = None
+    ) -> Tuple[int, int]:
+        """
+        Retorna (inseridos/atualizados, ignorados_por_experimento_inexistente)
+        """
+        payload = []
+        skipped = 0
+        for row in rows:
+            exp_name = (row.get("experiment_name") or "").strip()
+            gt = row.get("ground_truth")
+            if not exp_name or not gt:
+                continue
+            if allowed_experiments is not None and exp_name not in allowed_experiments:
+                skipped += 1
+                continue
+            payload.append((exp_name, gt))
+
+        if not payload:
+            return 0, skipped
+
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            if self.db_backend == "sqlite":
+                query = self._prepare_query(
+                    """
+                    INSERT INTO ground_truth_patterns (experiment_name, ground_truth)
+                    VALUES (%s, %s)
+                    ON CONFLICT(experiment_name) DO UPDATE SET ground_truth=excluded.ground_truth
+                    """
+                )
+            else:
+                query = self._prepare_query(
+                    """
+                    INSERT INTO ground_truth_patterns (experiment_name, ground_truth)
+                    VALUES (%s, %s)
+                    ON DUPLICATE KEY UPDATE ground_truth=VALUES(ground_truth)
+                    """
+                )
+            cursor.executemany(query, payload)
+            mydb.commit()
+            updated = cursor.rowcount if cursor.rowcount is not None else len(payload)
+            return updated, skipped
+        except self._db_errors as e:
+            print(f"Erro ao importar padrões do professor: {e}")
+            return 0, skipped
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
     def create_ground_truth_pattern(self, experiment_name: str, ground_truth: str):
         mydb = None
         cursor = None
@@ -846,6 +931,48 @@ class RemoteLaboratoryDAO:
         except self._db_errors as e:
             print(f"Erro ao buscar dados coletados: {e}")
             return []
+        finally:
+            if cursor:
+                cursor.close()
+            if mydb:
+                mydb.close()
+
+    def import_collected_rows(
+        self, experiment_id: int, experiment_name: str, rows: List[Dict[str, Any]]
+    ) -> int:
+        if not rows:
+            return 0
+        mydb = None
+        cursor = None
+        try:
+            mydb = self.get_banco()
+            cursor = mydb.cursor()
+            query = self._prepare_query(
+                """
+                INSERT INTO dadoscoletados2
+                (experiment_id, step, pulse_train, pulse_value, experimentName, timeToChange, duration, time_stamp)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """
+            )
+            payload = [
+                (
+                    experiment_id,
+                    json.dumps(row.get("step")),
+                    row.get("pulse_train"),
+                    row.get("pulse_value"),
+                    experiment_name,
+                    row.get("time_to_change"),
+                    row.get("duration"),
+                    row.get("time_stamp"),
+                )
+                for row in rows
+            ]
+            cursor.executemany(query, payload)
+            mydb.commit()
+            return cursor.rowcount if cursor.rowcount is not None else len(payload)
+        except self._db_errors as e:
+            print(f"Erro ao importar dados coletados: {e}")
+            return 0
         finally:
             if cursor:
                 cursor.close()

@@ -1,3 +1,6 @@
+import ast
+import csv
+import io
 import json
 import os
 import sys
@@ -176,6 +179,84 @@ def _validate_ground_truth_form_data(form_data: Dict[str, str]) -> List[str]:
     return errors
 
 
+def _parse_step_cell(raw_step: str) -> Any:
+    """
+    Tenta converter o texto do CSV (ex: "[False, True, False]") em lista de bool.
+    Caso falhe, devolve o valor original para ser serializado como string.
+    """
+    if raw_step is None:
+        return ""
+    try:
+        parsed = ast.literal_eval(raw_step)
+        return parsed
+    except Exception:
+        return raw_step
+
+
+def _safe_int(value: str):
+    try:
+        return int(value)
+    except Exception:
+        return None if value == "" else value
+
+
+def _safe_float(value: str):
+    try:
+        return float(value)
+    except Exception:
+        return None
+
+
+def _parse_collected_csv_upload(file_storage) -> List[Dict[str, Any]]:
+    required_cols = {"Passo", "Step", "Valor do Passo", "Duracao (s)", "Timestamp"}
+    if not file_storage:
+        raise ValueError("Selecione um arquivo CSV para importar.")
+    file_storage.stream.seek(0)
+    wrapper = io.TextIOWrapper(file_storage.stream, encoding="utf-8", newline="")
+    reader = csv.DictReader(wrapper)
+    headers = set(reader.fieldnames or [])
+    if not required_cols.issubset(headers):
+        raise ValueError(f"O CSV precisa conter as colunas: {', '.join(sorted(required_cols))}.")
+
+    parsed_rows: List[Dict[str, Any]] = []
+    for row in reader:
+        step_value = _parse_step_cell((row.get("Step") or "").strip())
+        passo_value = _safe_int((row.get("Passo") or "").strip())
+        pulse_value = _safe_int((row.get("Valor do Passo") or "").strip())
+        duration_value = _safe_float((row.get("Duracao (s)") or "").strip())
+        parsed_rows.append(
+            {
+                "step": step_value,
+                "pulse_train": passo_value,
+                "pulse_value": pulse_value,
+                "time_to_change": duration_value,
+                "duration": duration_value,
+                "time_stamp": (row.get("Timestamp") or "").strip(),
+            }
+        )
+    return parsed_rows
+
+
+def _parse_ground_truth_csv_upload(file_storage) -> List[Dict[str, str]]:
+    required_cols = {"experiment_name", "ground_truth"}
+    if not file_storage:
+        raise ValueError("Selecione um arquivo CSV para importar.")
+    file_storage.stream.seek(0)
+    wrapper = io.TextIOWrapper(file_storage.stream, encoding="utf-8", newline="")
+    reader = csv.DictReader(wrapper)
+    headers = {h.strip() for h in (reader.fieldnames or [])}
+    if not required_cols.issubset(headers):
+        raise ValueError("O CSV precisa conter as colunas: experiment_name, ground_truth.")
+    rows: List[Dict[str, str]] = []
+    for row in reader:
+        exp_name = (row.get("experiment_name") or "").strip()
+        ground_truth = (row.get("ground_truth") or "").strip()
+        if not exp_name or not ground_truth:
+            continue
+        rows.append({"experiment_name": exp_name, "ground_truth": ground_truth})
+    return rows
+
+
 @app.route("/settings/ai-key", methods=["GET", "POST"])
 def ai_key_settings():
     dao = _get_dao()
@@ -320,9 +401,11 @@ def delete_config(config_id: int):
 def ground_truth_index():
     dao = _get_dao()
     patterns = dao.list_ground_truth_patterns()
+    experiments = dao.list_full_plant_configs()
     return render_template(
         "ground_truth/index.html",
         patterns=patterns,
+        experiments=experiments,
         title="Padrões do Professor",
     )
 
@@ -400,6 +483,74 @@ def delete_ground_truth(pattern_id: int):
         flash("Padrão removido.", "success")
     else:
         flash("Não foi possível remover o padrão.", "error")
+    return redirect(url_for("ground_truth_index"))
+
+
+@app.post("/ground-truth/import")
+def import_ground_truth():
+    experiment_id_raw = (request.form.get("experiment_id") or "").strip()
+    upload = request.files.get("data_file")
+
+    if not upload or upload.filename == "":
+        flash("Selecione um arquivo CSV para importar.", "error")
+        return redirect(url_for("ground_truth_index"))
+
+    dao = _get_dao()
+    experiments = dao.list_full_plant_configs()
+
+    # Se o usuário selecionou um experimento, interpretamos o CSV no formato de passos.
+    if experiment_id_raw:
+        try:
+            experiment_id = int(experiment_id_raw)
+        except (TypeError, ValueError):
+            flash("O ID do experimento deve ser um número inteiro.", "error")
+            return redirect(url_for("ground_truth_index"))
+
+        config = dao.get_plant_config_by_id(experiment_id)
+        if not config:
+            flash("Experimento não encontrado.", "error")
+            return redirect(url_for("ground_truth_index"))
+
+        try:
+            rows = _parse_collected_csv_upload(upload)
+        except ValueError as exc:
+            flash(str(exc), "error")
+            return redirect(url_for("ground_truth_index"))
+
+        if not rows:
+            flash("Nenhum passo encontrado no arquivo.", "error")
+            return redirect(url_for("ground_truth_index"))
+
+        ground_truth_payload = json.dumps(rows, ensure_ascii=False)
+        saved = dao.upsert_ground_truth_pattern(config["experiment_name"], ground_truth_payload)
+        if saved:
+            flash(
+                f"Padrão importado para '{config['experiment_name']}' com {len(rows)} passo(s).",
+                "success",
+            )
+        else:
+            flash("Não foi possível salvar o padrão importado.", "error")
+        return redirect(url_for("ground_truth_index"))
+
+    # Caso contrário, esperamos o CSV com colunas experiment_name e ground_truth.
+    try:
+        rows = _parse_ground_truth_csv_upload(upload)
+    except ValueError as exc:
+        flash(str(exc), "error")
+        return redirect(url_for("ground_truth_index"))
+
+    if not rows:
+        flash("Nenhum padrão encontrado no arquivo.", "error")
+        return redirect(url_for("ground_truth_index"))
+
+    allowed = {exp["experiment_name"] for exp in experiments}
+    imported, skipped = dao.import_ground_truth_patterns(rows, allowed_experiments=allowed)
+    if imported:
+        flash(f"Importação concluída: {imported} padrões criados/atualizados.", "success")
+    if skipped:
+        flash(f"{skipped} padrão(ões) ignorado(s) por não haver experimento correspondente.", "error")
+    if not imported and not skipped:
+        flash("Nenhum padrão foi importado.", "error")
     return redirect(url_for("ground_truth_index"))
 
 
@@ -583,11 +734,53 @@ def api_delete_ground_truth(pattern_id: int):
 def collected_data():
     dao = _get_dao()
     rows = dao.list_collected_data()
+    experiments = dao.list_full_plant_configs()
     return render_template(
         "collected_data/index.html",
         title="Dados coletados",
         rows=rows,
+        experiments=experiments,
     )
+
+
+@app.post("/dados-coletados/import")
+def import_collected_data():
+    experiment_id_raw = (request.form.get("experiment_id") or "").strip()
+    upload = request.files.get("data_file")
+
+    errors: List[str] = []
+    try:
+        experiment_id = int(experiment_id_raw)
+    except (TypeError, ValueError):
+        errors.append("O ID do experimento deve ser um número inteiro.")
+
+    if not upload or upload.filename == "":
+        errors.append("Selecione um arquivo CSV para importar.")
+
+    if errors:
+        for error in errors:
+            flash(error, "error")
+        return redirect(url_for("collected_data"))
+
+    try:
+        rows = _parse_collected_csv_upload(upload)
+    except ValueError as exc:
+        flash(str(exc), "error")
+        return redirect(url_for("collected_data"))
+
+    dao = _get_dao()
+    config = dao.get_plant_config_by_id(experiment_id)
+    if not config:
+        flash("Experimento não encontrado.", "error")
+        return redirect(url_for("collected_data"))
+    experiment_name = config.get("experiment_name") or ""
+
+    imported = dao.import_collected_rows(experiment_id, experiment_name, rows)
+    if imported:
+        flash(f"Importação concluída: {imported} linhas adicionadas.", "success")
+    else:
+        flash("Nenhum dado foi importado. Verifique o arquivo e tente novamente.", "error")
+    return redirect(url_for("collected_data"))
 
 
 app.register_blueprint(api)
