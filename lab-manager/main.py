@@ -18,6 +18,7 @@ from flask import (
     request,
     url_for,
 )
+from dotenv import load_dotenv
 import httpx
 from langchain_core.messages import (
     AIMessage,
@@ -31,6 +32,9 @@ BOT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BOT_DIR.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+
+# Carrega variáveis do .env, se existir, antes de qualquer leitura de ambiente.
+load_dotenv(PROJECT_ROOT / ".env")
 
 from chatbot.main import build_agent  # noqa: E402  (import after sys.path tweak)
 from chatbot.settings import settings as chatbot_settings  # noqa: E402
@@ -861,7 +865,7 @@ def collected_data_correction():
 app.register_blueprint(api)
 
 if __name__ == "__main__":
-    app.run(debug=True, threaded=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5001)))
+    app.run(debug=True, threaded=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
 
 def _json_payload():

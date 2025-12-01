@@ -5,9 +5,9 @@ from urllib.parse import urlsplit, urlunsplit
 
 def _normalize_api_base(raw: str | None) -> str:
     """
-    Garante uso da porta 5001. Se apontar para localhost/127.x, força :5001 e caminho /api.
+    Garante uso da porta 5000. Se apontar para localhost/127.x, força :5000 e caminho /api.
     """
-    default = "http://localhost:5001/api"
+    default = "http://localhost:5000/api"
     if not raw:
         return default
     raw = raw.strip()
@@ -19,7 +19,7 @@ def _normalize_api_base(raw: str | None) -> str:
     path = parts.path or ""
 
     if host in ("localhost", "127.0.0.1"):
-        netloc = f"{host}:5001"
+        netloc = f"{host}:5000"
         path = "/api"
     else:
         netloc = parts.netloc or host

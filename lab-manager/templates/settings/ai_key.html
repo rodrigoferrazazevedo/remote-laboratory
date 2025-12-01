@@ -3,20 +3,23 @@
 <style>
     select { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; font-family: inherit; }
     .helper { font-size: 0.9rem; color: #4b5563; margin-top: 4px; }
+    .ai-key-grid { grid-template-columns: auto 1fr; align-items: end; }
+    .ai-key-grid select { width: auto; min-width: 220px; }
+    .ai-key-grid input[type="password"] { width: 100%; }
 </style>
 <div class="card">
     <h2 style="margin-top: 0;">Configurações de AI Key</h2>
     <p style="color: #4b5563;">Escolha se a AI Key virá da variável de ambiente OPENAI_API_KEY ou se será informada manualmente e armazenada de forma criptografada.</p>
     <form method="post">
-        <div class="form-grid">
-            <div class="full-width">
+        <div class="form-grid ai-key-grid">
+            <div>
                 <label for="ai_key_source">AI Key</label>
                 <select id="ai_key_source" name="ai_key_source">
                     <option value="system_variable" {% if form.source == 'system_variable' %}selected{% endif %}>Variável do Sistema</option>
                     <option value="manual" {% if form.source == 'manual' %}selected{% endif %}>Inserida manualmente</option>
                 </select>
             </div>
-            <div class="full-width">
+            <div>
                 <label for="manual_key">Chave</label>
                 <input type="password" id="manual_key" name="manual_key" placeholder="sk-..." value="{{ form.manual_key or '' }}">
                 <div class="helper">
