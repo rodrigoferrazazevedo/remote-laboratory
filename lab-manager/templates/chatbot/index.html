@@ -28,12 +28,12 @@
                 <span class="badge ok">API {{ api_base }}</span>
             </div>
         </div>
-        <p style="margin-top: 4px; color: #4b5563;">Converse com o agente para listar, criar ou remover experimentos e padrões. A conversa usa as ferramentas expostas pela API.</p>
+        <p style="margin-top: 4px; color: #4b5563;">Converse com o agente-professor para listar, criar ou remover experimentos e padrões, pedir explicações ou obter sugestões de correção. A conversa usa as ferramentas expostas pela API.</p>
         {% if not openai_ready %}
             <div class="error-box" style="display: block; background: #fef9c3; color: #854d0e; border: 1px solid #fcd34d;">Cadastre a AI Key nas Configurações ou defina a variável de ambiente OPENAI_API_KEY antes de enviar mensagens.</div>
         {% endif %}
         <div class="chat-log" id="chat-log">
-            <div class="bubble system">Pronto para conversar. Envie perguntas como "listar experimentos" ou "criar experimento demo".</div>
+            <div class="bubble system">Pronto para conversar. Exemplos: 1) "Explique o Padrão do Professor do experimento X em linguagem simples". 2) "Meus dados coletados do experimento X: o que está diferente e qual plano de ação?". 3) "O que é pulse train? Dê um exemplo curto."</div>
         </div>
         <form id="chat-form" class="chat-actions">
             <textarea id="chat-input" placeholder="Digite sua mensagem..." required></textarea>
@@ -50,6 +50,7 @@
             <li>Certifique-se de que o Flask esteja rodando (porta 5000 por padrão).</li>
             <li>O chatbot conversa com as rotas REST (`/api/experiments`, `/api/ground-truth`).</li>
             <li>Mantenha a aba aberta para preservar o histórico da sessão.</li>
+            <li>Peça explicações curtas: “o que é pulse train?” ou “explique o Padrão do Professor do experimento X”.</li>
             <li>Exemplos: “listar experimentos”, “criar experimento teste ip 10.0.0.5” ou “mostrar padrões do professor”.</li>
         </ul>
     </div>
@@ -69,7 +70,7 @@
         if (!history.length) {
             const bubble = document.createElement('div');
             bubble.className = 'bubble system';
-            bubble.textContent = 'Pronto para conversar. Envie perguntas como "listar experimentos" ou "criar experimento demo".';
+            bubble.textContent = 'Pronto para conversar. Exemplos: 1) "Explique o Padrão do Professor do experimento X em linguagem simples". 2) "Meus dados coletados do experimento X: o que está diferente e qual plano de ação?". 3) "O que é pulse train? Dê um exemplo curto."';
             chatLog.appendChild(bubble);
             return;
         }

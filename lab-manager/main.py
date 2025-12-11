@@ -828,7 +828,8 @@ def collected_data_correction():
 
     human_prompt = (
         "Atue como um professor de engenharia. Compare o Padrão do Professor com os Dados Coletados do aluno. "
-        "Aponte diferenças (ordem dos passos, valores de passo, pulsos, tempos) e dê dicas práticas e objetivas."
+        "Aponte diferenças (ordem dos passos, valores de passo, pulsos, tempos) e dê dicas práticas e objetivas. "
+        "Resuma pontos fortes e fracos e finalize com um plano de ação curto para o aluno corrigir."
         "\n\nContexto em JSON:\n"
         + json.dumps(
             {
