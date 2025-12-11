@@ -13,6 +13,8 @@
     .actions-row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 12px; align-items: flex-end; }
     .correction-card { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 16px; }
     .correction-card h3 { margin: 0 0 8px 0; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; margin-right: 8px; vertical-align: middle; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 <div class="card">
     <div style="display:flex; justify-content: space-between; align-items:center; gap: 12px; flex-wrap: wrap;">
@@ -48,7 +50,7 @@
                     {% endfor %}
                 </select>
             </label>
-            <button type="submit">Correção Automática</button>
+            <button type="submit" id="auto-correction-submit">Correção Automática</button>
         </form>
     </div>
 
@@ -94,4 +96,20 @@
     <p>Nenhum dado coletado encontrado.</p>
     {% endif %}
 </div>
+<script>
+    (function() {
+        const form = document.querySelector('form[action="{{ url_for('collected_data_correction') }}"]');
+        if (!form) return;
+        const submitBtn = form.querySelector('#auto-correction-submit');
+        form.addEventListener('submit', function(ev) {
+            if (!submitBtn || submitBtn.dataset.submitting === "1") {
+                ev.preventDefault();
+                return;
+            }
+            submitBtn.dataset.submitting = "1";
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span>Processando...';
+        });
+    })();
+</script>
 {% endblock %}
