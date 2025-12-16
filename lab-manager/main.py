@@ -211,6 +211,60 @@ def _safe_float(value: str):
         return None
 
 
+def _extract_value_time_pairs(sequence: Any) -> List[Tuple[Any, Any]]:
+    """
+    Normaliza sequências para pares (valor, tempo) usados no prompt de correção.
+    Aceita listas/tuplas de dicts ou pares já formatados; mantém None quando não houver tempo.
+    """
+    pairs: List[Tuple[Any, Any]] = []
+    if not isinstance(sequence, (list, tuple)):
+        return pairs
+
+    for item in sequence:
+        if isinstance(item, dict):
+            value = item.get("pulse_value", item.get("pulse_train"))
+            time_value = item.get("duration", item.get("timeToChange", item.get("time_to_change")))
+            pairs.append((value, time_value))
+        elif isinstance(item, (list, tuple)) and len(item) >= 2:
+            pairs.append((item[0], item[1]))
+        else:
+            pairs.append((item, None))
+    return pairs
+
+
+def _resolve_io_names(config: Dict[str, Any], ground_truth_value: Any) -> List[str]:
+    """
+    Tenta obter os nomes das IOs da configuração, do ground truth ou cria nomes genéricos
+    a partir da quantidade de entradas/saídas.
+    """
+    possible_keys = ("io_names", "io_list", "ios", "IOs")
+
+    for key in possible_keys:
+        value = config.get(key) if isinstance(config, dict) else None
+        if value:
+            return list(value)
+
+    if isinstance(ground_truth_value, dict):
+        for key in possible_keys:
+            value = ground_truth_value.get(key)
+            if value:
+                return list(value)
+
+    if isinstance(ground_truth_value, (list, tuple)):
+        for item in ground_truth_value:
+            if isinstance(item, dict):
+                for key in possible_keys:
+                    value = item.get(key)
+                    if value:
+                        return list(value)
+
+    num_bits = (config.get("num_of_inputs") or 0) + (config.get("num_of_outputs") or 0)
+    if num_bits:
+        return [f"io_{i}" for i in range(num_bits)]
+
+    return []
+
+
 def _parse_collected_csv_upload(file_storage) -> List[Dict[str, Any]]:
     required_cols = {"Passo", "Step", "Valor do Passo", "Duracao (s)", "Timestamp"}
     if not file_storage:
@@ -820,6 +874,14 @@ def collected_data_correction():
     except Exception:
         ground_truth_value = ground_truth_raw
 
+    pattern_pairs = _extract_value_time_pairs(ground_truth_value)
+    sequence_pairs = _extract_value_time_pairs(collected_rows)
+    io_names = _resolve_io_names(config or {}, ground_truth_value)
+
+    pattern_serialized = json.dumps(pattern_pairs or ground_truth_value, ensure_ascii=False)
+    sequence_serialized = json.dumps(sequence_pairs or collected_rows, ensure_ascii=False)
+    io_serialized = json.dumps(io_names, ensure_ascii=False)
+
     try:
         agent = _build_chat_agent()
     except RuntimeError as exc:
@@ -827,18 +889,46 @@ def collected_data_correction():
         return redirect(url_for("collected_data"))
 
     human_prompt = (
-        "Atue como um professor de engenharia. Compare o Padrão do Professor com os Dados Coletados do aluno. "
-        "Aponte diferenças (ordem dos passos, valores de passo, pulsos, tempos) e dê dicas práticas e objetivas. "
-        "Resuma pontos fortes e fracos e finalize com um plano de ação curto para o aluno corrigir."
-        "\n\nContexto em JSON:\n"
-        + json.dumps(
-            {
-                "experimento": config["experiment_name"],
-                "padrao_professor": ground_truth_value,
-                "dados_coletados": collected_rows,
-            },
-            ensure_ascii=False,
-        )
+        "DE SOMENTE UMA UNICA SOLUÇÃO NÃO OFEREÇA DUAS!! "
+        "Você é um analista especializado em sequências de valores inteiros provenientes de um CLP. "
+        "Cada número representa um trem de pulso (passo). Verifique se, dentro de uma sequência longa, existe uma subsequência "
+        "de referência (padrão) completa e contígua que apareça, em ordem, pelo menos duas vezes. Valores extras (ruídos) "
+        "entre ocorrências completas são permitidos, mas não contam como parte da ocorrência."
+        "\n- Procure apenas ocorrências completas e contíguas do padrão, mantendo ordem estrita; nada invertido conta."
+        "\n- Ocorrência parcial: ao falhar elemento a elemento, identifique até onde bateu (✅) e o primeiro valor errado (❌)."
+        "\n- Leituras inválidas (ex.: valor > 2^n-1 para n I/Os) são ruído, mas prefixos corretos antes do erro devem ser detectados."
+        "\n- Critério: se o padrão aparecer completo e ordenado >= 2 vezes → aprovado; caso contrário → reprovado."
+        "\n- A sequência sempre tem formato (passo, tempo); se tempo variar mais de 50% em relação ao padrão, marque ❌ por tempo errado."
+        "\n\nFormato de Resposta em Caso Positivo:"
+        "\n1. Parabéns, Você acertou."
+        "\n1.1 Inserir o padrão correto com o ✅ em cada acerto de cada valor."
+        "\n2. Linha em branco."
+        "\n3. Número de vezes que o padrão apareceu completo (em algarismos)."
+        "\n4. Não incluir nada além disso."
+        "\n\nFormato de Resposta em Caso Negativo:"
+        "\n1. Primeiro token: não (minúsculo)."
+        "\n2. Linha em branco."
+        "\n3. Quantas vezes o padrão apareceu completo."
+        "\n4. Linha em branco."
+        "\n5. Tabela Markdown com cabeçalho exato:"
+        "\n| Padrão do professor até o erro | Sequência do aluno até o erro | Valor incorreto |"
+        "\n- Cada linha: padrão com ✅ até o ponto correto e primeira divergência com ❌ (no padrão sempre ✅); "
+        "ao lado, sequência do aluno com ✅/❌ paralelos (passo e tempo: ✅,✅ se ambos corretos; ❌,❌ se passo errado)."
+        "\n6. Após a tabela, linha em branco e, para cada linha, explicação do valor incorreto:"
+        "\n- Decodificar em bits (tamanho da lista de I/Os)."
+        "\n- Comparação I/O: apenas os que diferirem, no formato 'I/O: estado esperado → estado ocorrido'."
+        "\n- Se houver erro por tempo, identificar novamente o passo e o tempo com ❌."
+        "\n\nEspecificação do Formato de Saída:"
+        "\n1. Linha 1: sim ou não."
+        "\n2. Linha 2: em branco."
+        "\n3. Linha 3: número de ocorrências completas."
+        "\n4. Se sim: terminar aqui."
+        "\n5. Se não: seguir a tabela e explicações conforme acima, sem textos extras."
+        "\n6. Use ✅ para cada valor correto antes do erro e ❌ exatamente no valor divergente."
+        "\n\nApós estas instruções, fornecer os dados nos formatos exatos:"
+        f"\nPadrão: {pattern_serialized}"
+        f"\nSequência: {sequence_serialized}"
+        f"\nIOs: {io_serialized}"
     )
 
     try:
