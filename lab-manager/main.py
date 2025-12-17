@@ -648,6 +648,7 @@ def chatbot_embed():
 def chatbot_ask():
     data = request.get_json(silent=True) or {}
     user_input = (data.get("message") or "").strip()
+    page_context = data.get("page_context")
     if not user_input:
         return jsonify({"error": "A mensagem não pode ser vazia."}), 400
     history_payload = data.get("history") or []
@@ -655,6 +656,20 @@ def chatbot_ask():
         history = _parse_history(history_payload)
     except Exception:
         return jsonify({"error": "Histórico de mensagens inválido."}), 400
+
+    if page_context and isinstance(page_context, dict):
+        safe_context = {
+            "path": str(page_context.get("path") or ""),
+            "title": str(page_context.get("title") or ""),
+            "heading": str(page_context.get("heading") or ""),
+            "content_preview": str(page_context.get("content_preview") or ""),
+        }
+        user_input = (
+            "Contexto da página atual (para responder sobre o conteúdo exibido):\n"
+            + json.dumps(safe_context, ensure_ascii=False)
+            + "\n\nPergunta do usuário:\n"
+            + user_input
+        )
 
     try:
         agent = _build_chat_agent()

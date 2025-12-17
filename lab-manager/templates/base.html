@@ -119,6 +119,27 @@
         const overlay = document.getElementById('chatbot-overlay');
         const drawer = document.getElementById('chatbot-drawer');
         const closeBtn = document.getElementById('chatbot-close');
+        const frame = document.getElementById('chatbot-frame');
+
+        const buildPageContext = () => {
+            const main = document.querySelector('main');
+            const heading = (main && main.querySelector('h1, h2, h3')) ? main.querySelector('h1, h2, h3').textContent : '';
+            const rawText = main ? (main.innerText || '') : '';
+            const normalizedText = rawText.replace(/\s+/g, ' ').trim().slice(0, 2000);
+            return {
+                path: window.location.pathname,
+                title: document.title || '',
+                heading: (heading || '').trim(),
+                content_preview: normalizedText,
+            };
+        };
+
+        const postContextToChat = () => {
+            if (!frame || !frame.contentWindow) return;
+            try {
+                frame.contentWindow.postMessage({ type: 'rl_page_context', payload: buildPageContext() }, window.location.origin);
+            } catch {}
+        };
 
         const setOpen = (open) => {
             overlay.classList.toggle('open', open);
@@ -126,6 +147,7 @@
             overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
             drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
             if (open) {
+                postContextToChat();
                 try { localStorage.setItem('chatbotDrawerOpen', '1'); } catch {}
             } else {
                 try { localStorage.removeItem('chatbotDrawerOpen'); } catch {}
@@ -135,6 +157,10 @@
         fab.addEventListener('click', () => setOpen(true));
         closeBtn.addEventListener('click', () => setOpen(false));
         overlay.addEventListener('click', () => setOpen(false));
+
+        if (frame) {
+            frame.addEventListener('load', () => postContextToChat());
+        }
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') setOpen(false);
