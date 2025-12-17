@@ -628,6 +628,22 @@ def chatbot_page():
     )
 
 
+@app.route("/chatbot/embed")
+def chatbot_embed():
+    dao = _get_dao()
+    try:
+        _resolve_openai_key(dao)
+        openai_ready = True
+    except Exception:
+        openai_ready = False
+    return render_template(
+        "chatbot/embed.html",
+        title="Chatbot",
+        api_base=chatbot_settings.api_base,
+        openai_ready=openai_ready,
+    )
+
+
 @app.post("/chatbot/ask")
 def chatbot_ask():
     data = request.get_json(silent=True) or {}

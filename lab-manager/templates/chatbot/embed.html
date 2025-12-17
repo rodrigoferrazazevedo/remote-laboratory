@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #fff; }
+        .chat-shell { height: 100vh; display: flex; flex-direction: column; }
+        .chat-top { padding: 12px 14px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 9999px; font-size: 0.8rem; }
+        .badge.ok { background: #dcfce7; color: #166534; }
+        .badge.warn { background: #fef9c3; color: #854d0e; }
+        .chat-body { flex: 1; display: flex; flex-direction: column; padding: 12px; gap: 10px; }
+        .chat-log { flex: 1; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; background: #f9fafb; display: flex; flex-direction: column; gap: 10px; }
+        .bubble { padding: 10px 12px; border-radius: 10px; max-width: 92%; width: fit-content; box-shadow: 0 1px 2px rgba(0,0,0,0.06); white-space: pre-wrap; word-break: break-word; }
+        .bubble.human { background: #2563eb; color: #fff; margin-left: auto; }
+        .bubble.ai { background: #e5e7eb; color: #111827; }
+        .bubble.system { background: #fef3c7; color: #92400e; }
+        .chat-actions { display: flex; gap: 10px; align-items: stretch; }
+        #chat-input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; resize: vertical; min-height: 70px; }
+        button { background: #2563eb; border: none; color: #fff; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
+        button.secondary { background: #6b7280; }
+        .error-box { display: none; padding: 10px; border-radius: 6px; background: #fee2e2; color: #7f1d1d; }
+    </style>
+</head>
+<body>
+    <div class="chat-shell">
+        <div class="chat-top">
+            <strong>Chatbot</strong>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <span class="badge {{ 'ok' if openai_ready else 'warn' }}">{{ 'AI Key pronta' if openai_ready else 'Configure a AI Key' }}</span>
+                <span class="badge ok">API {{ api_base }}</span>
+            </div>
+        </div>
+        <div class="chat-body">
+            {% if not openai_ready %}
+                <div class="error-box" style="display: block; background: #fef9c3; color: #854d0e; border: 1px solid #fcd34d;">
+                    Cadastre a AI Key nas Configurações ou defina a variável de ambiente OPENAI_API_KEY antes de enviar mensagens.
+                </div>
+            {% endif %}
+            <div class="chat-log" id="chat-log">
+                <div class="bubble system">Pronto para conversar. Exemplos: 1) "Explique o Padrão do Professor do experimento X em linguagem simples". 2) "Meus dados coletados do experimento X: o que está diferente e qual plano de ação?". 3) "O que é pulse train? Dê um exemplo curto."</div>
+            </div>
+            <form id="chat-form" class="chat-actions">
+                <textarea id="chat-input" placeholder="Digite sua mensagem..." required></textarea>
+                <div style="display: flex; gap: 8px; flex-direction: column; min-width: 120px;">
+                    <button type="submit" id="send-btn">Enviar</button>
+                    <button type="button" class="secondary" id="clear-btn">Limpar</button>
+                </div>
+            </form>
+            <div id="chat-error" class="error-box"></div>
+        </div>
+    </div>
+
+    <script>
+        const chatLog = document.getElementById('chat-log');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatError = document.getElementById('chat-error');
+        const sendBtn = document.getElementById('send-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        let history = [];
+
+        const renderHistory = () => {
+            chatLog.innerHTML = '';
+            if (!history.length) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble system';
+                bubble.textContent = 'Pronto para conversar. Exemplos: 1) "Explique o Padrão do Professor do experimento X em linguagem simples". 2) "Meus dados coletados do experimento X: o que está diferente e qual plano de ação?". 3) "O que é pulse train? Dê um exemplo curto."';
+                chatLog.appendChild(bubble);
+                return;
+            }
+            history.forEach(msg => {
+                if (!msg || !msg.type) return;
+                if (!['human', 'ai', 'system'].includes(msg.type)) return;
+                const content = formatContent(msg.data && msg.data.content);
+                const bubble = document.createElement('div');
+                bubble.className = `bubble ${msg.type}`;
+                bubble.textContent = content || '';
+                chatLog.appendChild(bubble);
+            });
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
+
+        const formatContent = (value) => {
+            if (value === null || value === undefined) return '';
+            if (typeof value === 'string') return value;
+            try { return JSON.stringify(value, null, 2); } catch { return String(value); }
+        };
+
+        const setError = (text) => {
+            if (!text) {
+                chatError.style.display = 'none';
+                chatError.textContent = '';
+                return;
+            }
+            chatError.style.display = 'block';
+            chatError.textContent = text;
+        };
+
+        const setLoading = (loading) => {
+            sendBtn.disabled = loading;
+            sendBtn.textContent = loading ? 'Enviando...' : 'Enviar';
+        };
+
+        chatForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            setError('');
+            const message = chatInput.value.trim();
+            if (!message) return;
+            setLoading(true);
+            try {
+                const response = await fetch('{{ url_for("chatbot_ask") }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, history }),
+                });
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(text || 'Erro ao enviar mensagem.');
+                }
+                const data = await response.json();
+                history = data.history || [];
+                renderHistory();
+                chatInput.value = '';
+                if (data.reply) {
+                    chatInput.placeholder = 'Pergunte algo mais...';
+                }
+            } catch (err) {
+                setError(err.message || 'Erro inesperado.');
+            } finally {
+                setLoading(false);
+                chatInput.focus();
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            history = [];
+            renderHistory();
+            chatInput.value = '';
+            setError('');
+        });
+
+        chatInput.focus();
+    </script>
+</body>
+</html>
+

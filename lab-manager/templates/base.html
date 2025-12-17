@@ -32,6 +32,51 @@
         header nav a { color: #cbd5f5; margin-left: 12px; text-decoration: none; font-weight: 600; }
         header nav a.active { text-decoration: underline; }
         header nav a:first-child { margin-left: 0; }
+
+        .chatbot-fab {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 1200;
+            border-radius: 9999px;
+            padding: 12px 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+        }
+        .chatbot-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(17, 24, 39, 0.45);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 180ms ease;
+            z-index: 1201;
+        }
+        .chatbot-overlay.open { opacity: 1; pointer-events: auto; }
+        .chatbot-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: min(440px, 92vw);
+            background: #fff;
+            transform: translateX(100%);
+            transition: transform 220ms ease;
+            box-shadow: -12px 0 26px rgba(0,0,0,0.18);
+            z-index: 1202;
+            display: flex;
+            flex-direction: column;
+        }
+        .chatbot-drawer.open { transform: translateX(0); }
+        .chatbot-drawer-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .chatbot-drawer-header strong { color: #111827; }
+        .chatbot-drawer iframe { flex: 1; width: 100%; border: 0; }
     </style>
 </head>
 <body>
@@ -58,5 +103,46 @@
         {% endwith %}
         {% block content %}{% endblock %}
     </main>
+
+    <button type="button" id="chatbot-fab" class="chatbot-fab">Chat</button>
+    <div id="chatbot-overlay" class="chatbot-overlay" aria-hidden="true"></div>
+    <aside id="chatbot-drawer" class="chatbot-drawer" aria-hidden="true">
+        <div class="chatbot-drawer-header">
+            <strong>Chatbot</strong>
+            <button type="button" class="secondary" id="chatbot-close">Fechar</button>
+        </div>
+        <iframe title="Chatbot" id="chatbot-frame" src="{{ url_for('chatbot_embed') }}"></iframe>
+    </aside>
+
+    <script>
+        const fab = document.getElementById('chatbot-fab');
+        const overlay = document.getElementById('chatbot-overlay');
+        const drawer = document.getElementById('chatbot-drawer');
+        const closeBtn = document.getElementById('chatbot-close');
+
+        const setOpen = (open) => {
+            overlay.classList.toggle('open', open);
+            drawer.classList.toggle('open', open);
+            overlay.setAttribute('aria-hidden', open ? 'false' : 'true');
+            drawer.setAttribute('aria-hidden', open ? 'false' : 'true');
+            if (open) {
+                try { localStorage.setItem('chatbotDrawerOpen', '1'); } catch {}
+            } else {
+                try { localStorage.removeItem('chatbotDrawerOpen'); } catch {}
+            }
+        };
+
+        fab.addEventListener('click', () => setOpen(true));
+        closeBtn.addEventListener('click', () => setOpen(false));
+        overlay.addEventListener('click', () => setOpen(false));
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') setOpen(false);
+        });
+
+        try {
+            if (localStorage.getItem('chatbotDrawerOpen') === '1') setOpen(true);
+        } catch {}
+    </script>
 </body>
 </html>
