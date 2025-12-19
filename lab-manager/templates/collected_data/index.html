@@ -15,6 +15,7 @@
     .correction-card h3 { margin: 0 0 8px 0; }
     .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; margin-right: 8px; vertical-align: middle; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .duration-chip { background: #e0f2fe; color: #0f172a; padding: 4px 10px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; }
 </style>
 <div class="card">
     <div style="display:flex; justify-content: space-between; align-items:center; gap: 12px; flex-wrap: wrap;">
@@ -56,7 +57,10 @@
 
     {% if correction_result %}
     <div class="correction-card">
-        <h3>Correção automática</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <h3 style="margin: 0;">Correção automática</h3>
+            <span id="auto-correction-duration" class="duration-chip" aria-live="polite"></span>
+        </div>
         <pre style="white-space: pre-wrap; word-break: break-word; margin: 0;">{{ correction_result }}</pre>
     </div>
     {% endif %}
@@ -101,6 +105,7 @@
         const form = document.querySelector('form[action="{{ url_for('collected_data_correction') }}"]');
         if (!form) return;
         const submitBtn = form.querySelector('#auto-correction-submit');
+        const startKey = 'autoCorrectionStart';
         form.addEventListener('submit', function(ev) {
             if (!submitBtn || submitBtn.dataset.submitting === "1") {
                 ev.preventDefault();
@@ -109,7 +114,19 @@
             submitBtn.dataset.submitting = "1";
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner" aria-hidden="true"></span>Processando...';
+            sessionStorage.setItem(startKey, String(Date.now()));
         });
+
+        const durationTarget = document.getElementById('auto-correction-duration');
+        if (durationTarget) {
+            const startValue = Number(sessionStorage.getItem(startKey));
+            if (Number.isFinite(startValue) && startValue > 0) {
+                const elapsedMs = Date.now() - startValue;
+                const elapsedSec = (elapsedMs / 1000).toFixed(2);
+                durationTarget.textContent = `Tempo total: ${elapsedSec}s`;
+            }
+            sessionStorage.removeItem(startKey);
+        }
     })();
 </script>
 {% endblock %}
