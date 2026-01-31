@@ -919,48 +919,52 @@ def collected_data_correction():
         flash(str(exc), "error")
         return redirect(url_for("collected_data"))
 
-    human_prompt = (
-        "DE SOMENTE UMA UNICA SOLUÇÃO NÃO OFEREÇA DUAS!! "
-        "Você é um analista especializado em sequências de valores inteiros provenientes de um CLP. "
-        "Cada número representa um trem de pulso (passo). Verifique se, dentro de uma sequência longa, existe uma subsequência "
-        "de referência (padrão) completa e contígua que apareça, em ordem, pelo menos duas vezes. Valores extras (ruídos) "
-        "entre ocorrências completas são permitidos, mas não contam como parte da ocorrência."
-        "\n- Procure apenas ocorrências completas e contíguas do padrão, mantendo ordem estrita; nada invertido conta."
-        "\n- Ocorrência parcial: ao falhar elemento a elemento, identifique até onde bateu (✅) e o primeiro valor errado (❌)."
-        "\n- Leituras inválidas (ex.: valor > 2^n-1 para n I/Os) são ruído, mas prefixos corretos antes do erro devem ser detectados."
-        "\n- Critério: se o padrão aparecer completo e ordenado >= 2 vezes → aprovado; caso contrário → reprovado."
-        "\n- A sequência sempre tem formato (passo, tempo); se tempo variar mais de 50% em relação ao padrão, marque ❌ por tempo errado."
-        "\n\nFormato de Resposta em Caso Positivo:"
-        "\n1. Parabéns, Você acertou."
-        "\n1.1 Inserir o padrão correto com o ✅ em cada acerto de cada valor."
-        "\n2. Linha em branco."
-        "\n3. Número de vezes que o padrão apareceu completo (em algarismos)."
-        "\n4. Não incluir nada além disso."
-        "\n\nFormato de Resposta em Caso Negativo:"
-        "\n1. Primeiro token: não (minúsculo)."
-        "\n2. Linha em branco."
-        "\n3. Quantas vezes o padrão apareceu completo."
-        "\n4. Linha em branco."
-        "\n5. Tabela Markdown com cabeçalho exato:"
-        "\n| Padrão do professor até o erro | Sequência do aluno até o erro | Valor incorreto |"
-        "\n- Cada linha: padrão com ✅ até o ponto correto e primeira divergência com ❌ (no padrão sempre ✅); "
-        "ao lado, sequência do aluno com ✅/❌ paralelos (passo e tempo: ✅,✅ se ambos corretos; ❌,❌ se passo errado)."
-        "\n6. Após a tabela, linha em branco e, para cada linha, explicação do valor incorreto:"
-        "\n- Decodificar em bits (tamanho da lista de I/Os)."
-        "\n- Comparação I/O: apenas os que diferirem, no formato 'I/O: estado esperado → estado ocorrido'."
-        "\n- Se houver erro por tempo, identificar novamente o passo e o tempo com ❌."
-        "\n\nEspecificação do Formato de Saída:"
-        "\n1. Linha 1: sim ou não."
-        "\n2. Linha 2: em branco."
-        "\n3. Linha 3: número de ocorrências completas."
-        "\n4. Se sim: terminar aqui."
-        "\n5. Se não: seguir a tabela e explicações conforme acima, sem textos extras."
-        "\n6. Use ✅ para cada valor correto antes do erro e ❌ exatamente no valor divergente."
-        "\n\nApós estas instruções, fornecer os dados nos formatos exatos:"
-        f"\nPadrão: {pattern_serialized}"
-        f"\nSequência: {sequence_serialized}"
-        f"\nIOs: {io_serialized}"
-    )
+    human_prompt = f"""
+NÃO RODE CÓDIGO EM PYTHON!!!!! DE SOMENTE UMA UNICA SOLUÇÃO NÃO OFEREÇA DUAS!!
+Você é um analista especializado em sequências de valores inteiros provenientes de um CLP. Cada número na sequência representa um trem de pulso codificado em decimal (passo) com um tempo associado.
+- Verifique se, dentro da sequência longa, existe uma subsequência de referência (padrão) completa, contígua e na ordem exata que apareça pelo menos duas vezes. Valores extras (ruídos) entre ocorrências completas são permitidos, mas não contam como parte da ocorrência.
+- Procure apenas ocorrências completas e contíguas do padrão, mantendo ordem estrita; trechos invertidos ou intercalados não contam.
+- Ocorrência parcial: quando a comparação falhar, identifique até onde bateu (✅) e marque o primeiro valor divergente com ❌.
+- Leituras inválidas ou fora do intervalo para n I/Os (valor > 2^n-1) são tratadas como ruído, mas prefixos corretos antes do erro devem ser considerados.
+- Critério de aprovação: se o padrão aparecer completo e ordenado pelo menos duas vezes → aprovado; caso contrário → reprovado.
+- Regra absoluta sobre tempo: compare o tempo do aluno com o tempo do padrão por tolerância percentual; se a diferença for ≤30% marque o tempo como correto (✅). Somente se a variação for >30% marque o tempo como incorreto (❌). É proibido marcar tempo como erro apenas por ser numericamente diferente.
+- O padrão do professor NUNCA recebe ❌; ele é sempre 100% ✅. ❌❌ só pode ocorrer quando o passo está errado E o tempo está fora da tolerância.
+- Sempre descarte o último dado da sequência antes da avaliação.
+
+Formato de Resposta em Caso Positivo:
+1. Parabéns, Você acertou.
+1.1 Inserir o padrão correto do professor e o do aluno com ✅ em cada passo certo com cada valor/tempo.
+2. Linha em branco.
+3. Número de vezes que o padrão apareceu completo (em algarismos, ex.: “2”, “3”).
+4. Não incluir mais nada (sem texto extra, sem tabela).
+
+Formato de Resposta em Caso Negativo:
+1. Primeiro token: não, você errou. Mas vamos entender o experimento.
+2. Linha em branco.
+3. Quantas vezes o padrão apareceu completo.
+4. Linha em branco.
+5. Tabela Markdown com cabeçalho exato:
+| Padrão do professor até o erro | Sequência do aluno até o erro | Valor incorreto |
+   • Cada linha deve conter valor/tempo do padrão (todos com ✅) até o ponto de falha (inclusive) e, ao lado, a sequência do aluno com ✅ ✅ se passo e tempo corretos ou ❌❌ se passo ou tempo estiver fora da tolerância. O professor nunca recebe ❌. Nenhuma linha pode ser omitida; a tabela deve ficar alinhada.
+6. Após a tabela, linha em branco e, para cada linha, explicação do “Valor incorreto”:
+   • Decodificar em bits (tamanho da lista de I/Os) e mostrar o binário.
+   • Comparação estrita “acionamentos esperados vs. ocorridos”: listar apenas os I/Os que diferiram, no formato “nome_do_IO: estado esperado → estado ocorrido (ligado/desligado)”.
+   • Se houve erro por tempo, indicar abaixo o passo e o tempo com ❌.
+7. Não incluir qualquer outro texto fora do especificado (sem introduções, conclusões ou resumos).
+
+Especificação do Formato de Saída (obrigatório):
+1. Linha 1: sim ou não.
+2. Linha 2: em branco.
+3. Linha 3: número de ocorrências completas.
+4. Se “sim”: terminar aqui.
+5. Se “não”: seguir exatamente os passos do caso negativo acima.
+6. Usar ✅ para cada valor correto antes do erro e ❌ exatamente no valor divergente.
+
+Dados para análise (use exatamente):
+Padrão: {pattern_serialized}
+Sequência: {sequence_serialized}
+IOs: {io_serialized}
+"""
 
     try:
         result = agent.invoke({"messages": [HumanMessage(content=human_prompt)]})
