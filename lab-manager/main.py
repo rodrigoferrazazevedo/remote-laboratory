@@ -2,6 +2,7 @@ import ast
 import csv
 import io
 import json
+import re
 import os
 import sys
 from pathlib import Path
@@ -211,22 +212,213 @@ def _safe_float(value: str):
         return None
 
 
+def _truncate_int(value: Any) -> int | None:
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        return int(value)
+    if isinstance(value, str):
+        try:
+            return int(float(value))
+        except Exception:
+            return None
+    return None
+
+
+def _format_bits(value: int | None, width: int) -> str:
+    if value is None or width <= 0:
+        return ""
+    return format(value, f"0{width}b")
+
+
+def _format_correction_output(
+    pattern_pairs: List[Tuple[Any, Any]],
+    sequence_pairs: List[Tuple[Any, Any]],
+    io_names: List[str],
+) -> str:
+    pattern = pattern_pairs or []
+    sequence = sequence_pairs or []
+    if sequence and len(sequence) > 1:
+        sequence = sequence[:-1]
+
+    pattern_len = len(pattern)
+    seq_len = len(sequence)
+    if pattern_len == 0 or seq_len == 0:
+        reason = []
+        if pattern_len == 0:
+            reason.append("Padrão vazio")
+        if seq_len == 0:
+            reason.append("Sequência vazia")
+        reason_text = " e ".join(reason)
+        return f"não\n\n0\n\n{reason_text}"
+
+    bit_count = len(io_names)
+    max_valid_value = (2 ** bit_count - 1) if bit_count > 0 else None
+
+    def _step_ok(expected: Any, actual: Any) -> bool:
+        exp_int = _truncate_int(expected)
+        act_int = _truncate_int(actual)
+        if exp_int is None or act_int is None:
+            return False
+        return exp_int == act_int
+
+    def _time_ok(expected: Any, actual: Any) -> bool:
+        exp_int = _truncate_int(expected)
+        act_int = _truncate_int(actual)
+        if exp_int is None or act_int is None:
+            return False
+        return exp_int == act_int
+
+    def _value_invalid(value: Any) -> bool:
+        if max_valid_value is None:
+            return False
+        value_int = _truncate_int(value)
+        if value_int is None:
+            return True
+        return value_int > max_valid_value
+
+    def _format_value_time(value: Any, time_value: Any) -> str:
+        return f"{value}/{time_value}"
+
+    def _emoji(step_ok: bool, time_ok: bool) -> str:
+        if step_ok and time_ok:
+            return "✅✅"
+        if step_ok and not time_ok:
+            return "✅❌"
+        if not step_ok and time_ok:
+            return "❌✅"
+        return "❌❌"
+
+    complete_occurrences = 0
+    total_cycles = seq_len // pattern_len
+    for cycle in range(total_cycles):
+        matched = True
+        for offset in range(pattern_len):
+            exp_step, exp_time = pattern[offset]
+            act_step, act_time = sequence[cycle * pattern_len + offset]
+            if _value_invalid(act_step):
+                matched = False
+                break
+            if not _step_ok(exp_step, act_step) or not _time_ok(exp_time, act_time):
+                matched = False
+                break
+        if matched:
+            complete_occurrences += 1
+
+    approved = complete_occurrences >= 2
+
+    if approved:
+        return f"sim\n\n{complete_occurrences}"
+
+    lines: List[str] = []
+    lines.append("não")
+    lines.append("")
+    lines.append(str(complete_occurrences))
+    lines.append("")
+    lines.append("| Padrão do professor até o erro | Sequência do aluno até o erro | Valor incorreto |")
+
+    table_rows: List[Tuple[int, int, Any, Any, bool, bool]] = []
+    for index in range(seq_len):
+        exp_step, exp_time = pattern[index % pattern_len]
+        act_step, act_time = sequence[index]
+        step_match = _step_ok(exp_step, act_step)
+        time_match = _time_ok(exp_time, act_time)
+        table_rows.append((index, index % pattern_len, act_step, act_time, step_match, time_match))
+
+        professor_parts = [_format_value_time(exp_step, exp_time)]
+        student_parts = [f"{_format_value_time(act_step, act_time)} {_emoji(step_match, time_match)}"]
+
+        if step_match and time_match:
+            incorrect_value = ""
+        elif step_match and not time_match:
+            incorrect_value = f"{act_time}"
+        elif not step_match and time_match:
+            incorrect_value = f"{act_step}"
+        else:
+            incorrect_value = f"{act_step}; {act_time}"
+        lines.append(f"| {', '.join(professor_parts)} | {', '.join(student_parts)} | {incorrect_value} |")
+
+    lines.append("")
+    for start, mismatch_index, act_step, act_time, step_match, time_match in table_rows:
+        exp_step, exp_time = pattern[mismatch_index]
+        if step_match and time_match:
+            continue
+        if not step_match:
+            exp_step_int = _truncate_int(exp_step)
+            act_step_int = _truncate_int(act_step)
+            bits_expected = _format_bits(exp_step_int, bit_count)
+            bits_actual = _format_bits(act_step_int, bit_count)
+            lines.append(f"Valor incorreto: {act_step}")
+            if bits_actual:
+                lines.append(f"- Decodificação em bits: {bits_actual}")
+            if bits_expected:
+                diff_ios = []
+                for i in range(bit_count):
+                    bit_index = bit_count - 1 - i
+                    exp_bit = (exp_step_int >> bit_index) & 1 if exp_step_int is not None else 0
+                    act_bit = (act_step_int >> bit_index) & 1 if act_step_int is not None else 0
+                    if exp_bit != act_bit:
+                        io_name = io_names[i] if i < len(io_names) else f"io_{i}"
+                        exp_state = "ligado" if exp_bit else "desligado"
+                        act_state = "ligado" if act_bit else "desligado"
+                        diff_ios.append(f"{io_name}: {exp_state} → {act_state}")
+                if diff_ios:
+                    for item in diff_ios:
+                        lines.append(f"- {item}")
+        if not time_match:
+            lines.append(f"Tempo: {act_time} ❌")
+
+    return "\n".join(lines)
+
+
 def _extract_value_time_pairs(sequence: Any) -> List[Tuple[Any, Any]]:
     """
     Normaliza sequências para pares (valor, tempo) usados no prompt de correção.
     Aceita listas/tuplas de dicts ou pares já formatados; mantém None quando não houver tempo.
     """
     pairs: List[Tuple[Any, Any]] = []
+    if isinstance(sequence, str):
+        raw = sequence.strip().rstrip(".;")
+        try:
+            parsed = json.loads(raw)
+        except Exception:
+            try:
+                parsed = ast.literal_eval(raw)
+            except Exception:
+                try:
+                    parsed = ast.literal_eval(f"[{raw}]")
+                except Exception:
+                    tuples = []
+                    for match in re.findall(r"\(([^)]+)\)", raw):
+                        parts = [p.strip() for p in match.split(",")]
+                        if len(parts) < 2:
+                            continue
+                        try:
+                            left = float(parts[0])
+                            right = float(parts[1])
+                        except Exception:
+                            continue
+                        tuples.append((left, right))
+                    if tuples:
+                        return _extract_value_time_pairs(tuples)
+                    return pairs
+        return _extract_value_time_pairs(parsed)
     if not isinstance(sequence, (list, tuple)):
         return pairs
 
     for item in sequence:
         if isinstance(item, dict):
-            value = item.get("pulse_value", item.get("pulse_train"))
+            value = item.get("pulse_value", item.get("pulse_train", item.get("value", item.get("step"))))
             time_value = item.get("duration", item.get("timeToChange", item.get("time_to_change")))
             pairs.append((value, time_value))
         elif isinstance(item, (list, tuple)) and len(item) >= 2:
             pairs.append((item[0], item[1]))
+        elif isinstance(item, (int, float, str)):
+            pairs.append((item, None))
         else:
             pairs.append((item, None))
     return pairs
@@ -673,25 +865,124 @@ def chatbot_ask():
 
     try:
         agent = _build_chat_agent()
+        messages = history + [HumanMessage(content=user_input)]
+        result = agent.invoke({"messages": messages})
+        reply = _last_ai_message(result["messages"])
+        return jsonify({"reply": reply, "history": _serialize_messages(result["messages"])}), 200
     except RuntimeError as exc:
-        return jsonify({"error": str(exc)}), 400
-
-    try:
-        result = agent.invoke({"messages": [*history, HumanMessage(content=user_input)]})
+        return jsonify({"error": str(exc)}), 503
     except httpx.HTTPError as exc:
         return jsonify({"error": f"Erro ao acessar a API: {exc}"}), 502
     except Exception as exc:
-        return jsonify({"error": f"Erro ao executar o chatbot: {exc}"}), 500
-
-    messages = result["messages"]
-    reply = _last_ai_message(messages)
-    return jsonify({"reply": reply, "history": _serialize_messages(messages)})
+        return jsonify({"error": f"Erro inesperado: {exc}"}), 500
 
 
-@api.get("/experiments")
-def api_list_experiments():
+@app.route("/dados-coletados")
+def collected_data():
     dao = _get_dao()
-    return jsonify(dao.list_full_plant_configs())
+    rows = dao.list_collected_data()
+    experiments = dao.list_full_plant_configs()
+    return render_template(
+        "collected_data/index.html",
+        title="Dados coletados",
+        rows=rows,
+        experiments=experiments,
+        correction_result=None,
+        correction_error=None,
+    )
+
+
+@app.post("/dados-coletados/import")
+def import_collected_data():
+    experiment_id_raw = (request.form.get("experiment_id") or "").strip()
+    upload = request.files.get("data_file")
+
+    errors: List[str] = []
+    try:
+        experiment_id = int(experiment_id_raw)
+    except (TypeError, ValueError):
+        errors.append("O ID do experimento deve ser um número inteiro.")
+
+    if not upload or upload.filename == "":
+        errors.append("Selecione um arquivo CSV para importar.")
+
+    if errors:
+        for error in errors:
+            flash(error, "error")
+        return redirect(url_for("collected_data"))
+
+    try:
+        rows = _parse_collected_csv_upload(upload)
+    except ValueError as exc:
+        flash(str(exc), "error")
+        return redirect(url_for("collected_data"))
+
+    dao = _get_dao()
+    config = dao.get_plant_config_by_id(experiment_id)
+    if not config:
+        flash("Experimento não encontrado.", "error")
+        return redirect(url_for("collected_data"))
+    experiment_name = config.get("experiment_name") or ""
+
+    imported = dao.import_collected_rows(experiment_id, experiment_name, rows)
+    if imported:
+        flash(f"Importação concluída: {imported} linhas adicionadas.", "success")
+    else:
+        flash("Nenhum dado foi importado. Verifique o arquivo e tente novamente.", "error")
+    return redirect(url_for("collected_data"))
+
+
+@app.post("/dados-coletados/correcao")
+def collected_data_correction():
+    experiment_id_raw = (request.form.get("experiment_id") or "").strip()
+    try:
+        experiment_id = int(experiment_id_raw)
+    except (TypeError, ValueError):
+        flash("Selecione um experimento válido para correção automática.", "error")
+        return redirect(url_for("collected_data"))
+
+    dao = _get_dao()
+    config = dao.get_plant_config_by_id(experiment_id)
+    if not config:
+        flash("Experimento não encontrado.", "error")
+        return redirect(url_for("collected_data"))
+
+    ground = dao.get_ground_truth_by_experiment(config["experiment_name"])
+    if not ground:
+        flash("Nenhum Padrão do Professor cadastrado para este experimento.", "error")
+        return redirect(url_for("collected_data"))
+
+    collected_rows = dao.list_collected_data_by_experiment(experiment_id, limit=500)
+    if not collected_rows:
+        flash("Nenhum dado coletado encontrado para este experimento.", "error")
+        return redirect(url_for("collected_data"))
+
+    ground_truth_raw = ground.get("ground_truth") if isinstance(ground, dict) else ground
+    try:
+        ground_truth_value = json.loads(ground_truth_raw)
+    except Exception:
+        ground_truth_value = ground_truth_raw
+
+    pattern_pairs = _extract_value_time_pairs(ground_truth_value)
+    sequence_pairs = _extract_value_time_pairs(collected_rows)
+    io_names = _resolve_io_names(config or {}, ground_truth_value)
+
+    try:
+        reply = _format_correction_output(pattern_pairs, sequence_pairs, io_names)
+    except Exception as exc:
+        flash(f"Erro ao executar a correção automática: {exc}", "error")
+        return redirect(url_for("collected_data"))
+
+    rows = dao.list_collected_data()
+    experiments = dao.list_full_plant_configs()
+    return render_template(
+        "collected_data/index.html",
+        title="Dados coletados",
+        rows=rows,
+        experiments=experiments,
+        correction_result=reply,
+        correction_error=None,
+    )
 
 
 @api.post("/experiments")
@@ -810,190 +1101,6 @@ def api_update_ground_truth(pattern_id: int):
     return jsonify({"updated": True})
 
 
-@api.delete("/ground-truth/<int:pattern_id>")
-def api_delete_ground_truth(pattern_id: int):
-    dao = _get_dao()
-    removed = dao.delete_ground_truth_pattern(pattern_id)
-    if not removed:
-        abort(404, description="Padrão não encontrado.")
-    return jsonify({"deleted": True})
-
-
-@app.route("/dados-coletados")
-def collected_data():
-    dao = _get_dao()
-    rows = dao.list_collected_data()
-    experiments = dao.list_full_plant_configs()
-    return render_template(
-        "collected_data/index.html",
-        title="Dados coletados",
-        rows=rows,
-        experiments=experiments,
-        correction_result=None,
-        correction_error=None,
-    )
-
-
-@app.post("/dados-coletados/import")
-def import_collected_data():
-    experiment_id_raw = (request.form.get("experiment_id") or "").strip()
-    upload = request.files.get("data_file")
-
-    errors: List[str] = []
-    try:
-        experiment_id = int(experiment_id_raw)
-    except (TypeError, ValueError):
-        errors.append("O ID do experimento deve ser um número inteiro.")
-
-    if not upload or upload.filename == "":
-        errors.append("Selecione um arquivo CSV para importar.")
-
-    if errors:
-        for error in errors:
-            flash(error, "error")
-        return redirect(url_for("collected_data"))
-
-    try:
-        rows = _parse_collected_csv_upload(upload)
-    except ValueError as exc:
-        flash(str(exc), "error")
-        return redirect(url_for("collected_data"))
-
-    dao = _get_dao()
-    config = dao.get_plant_config_by_id(experiment_id)
-    if not config:
-        flash("Experimento não encontrado.", "error")
-        return redirect(url_for("collected_data"))
-    experiment_name = config.get("experiment_name") or ""
-
-    imported = dao.import_collected_rows(experiment_id, experiment_name, rows)
-    if imported:
-        flash(f"Importação concluída: {imported} linhas adicionadas.", "success")
-    else:
-        flash("Nenhum dado foi importado. Verifique o arquivo e tente novamente.", "error")
-    return redirect(url_for("collected_data"))
-
-
-@app.post("/dados-coletados/correcao")
-def collected_data_correction():
-    experiment_id_raw = (request.form.get("experiment_id") or "").strip()
-    try:
-        experiment_id = int(experiment_id_raw)
-    except (TypeError, ValueError):
-        flash("Selecione um experimento válido para correção automática.", "error")
-        return redirect(url_for("collected_data"))
-
-    dao = _get_dao()
-    config = dao.get_plant_config_by_id(experiment_id)
-    if not config:
-        flash("Experimento não encontrado.", "error")
-        return redirect(url_for("collected_data"))
-
-    ground = dao.get_ground_truth_by_experiment(config["experiment_name"])
-    if not ground:
-        flash("Nenhum Padrão do Professor cadastrado para este experimento.", "error")
-        return redirect(url_for("collected_data"))
-
-    collected_rows = dao.list_collected_data_by_experiment(experiment_id, limit=500)
-    if not collected_rows:
-        flash("Nenhum dado coletado encontrado para este experimento.", "error")
-        return redirect(url_for("collected_data"))
-
-    ground_truth_raw = ground.get("ground_truth") if isinstance(ground, dict) else ground
-    try:
-        ground_truth_value = json.loads(ground_truth_raw)
-    except Exception:
-        ground_truth_value = ground_truth_raw
-
-    pattern_pairs = _extract_value_time_pairs(ground_truth_value)
-    sequence_pairs = _extract_value_time_pairs(collected_rows)
-    io_names = _resolve_io_names(config or {}, ground_truth_value)
-
-    pattern_serialized = json.dumps(pattern_pairs or ground_truth_value, ensure_ascii=False)
-    sequence_serialized = json.dumps(sequence_pairs or collected_rows, ensure_ascii=False)
-    io_serialized = json.dumps(io_names, ensure_ascii=False)
-
-    try:
-        agent = _build_chat_agent()
-    except RuntimeError as exc:
-        flash(str(exc), "error")
-        return redirect(url_for("collected_data"))
-
-    human_prompt = f"""
-NÃO RODE CÓDIGO EM PYTHON!!!!! DE SOMENTE UMA UNICA SOLUÇÃO NÃO OFEREÇA DUAS!!
-Você é um analista especializado em sequências de valores inteiros provenientes de um CLP. Cada número na sequência representa um trem de pulso codificado em decimal (passo) com um tempo associado.
-- Verifique se, dentro da sequência longa, existe uma subsequência de referência (padrão) completa, contígua e na ordem exata que apareça pelo menos duas vezes. Valores extras (ruídos) entre ocorrências completas são permitidos, mas não contam como parte da ocorrência.
-- Procure apenas ocorrências completas e contíguas do padrão, mantendo ordem estrita; trechos invertidos ou intercalados não contam.
-- Ocorrência parcial: quando a comparação falhar, identifique até onde bateu (✅) e marque o primeiro valor divergente com ❌.
-- Leituras inválidas ou fora do intervalo para n I/Os (valor > 2^n-1) são tratadas como ruído, mas prefixos corretos antes do erro devem ser considerados.
-- Critério de aprovação: se o padrão aparecer completo e ordenado pelo menos duas vezes → aprovado; caso contrário → reprovado.
-- Regra absoluta sobre tempo: compare o tempo do aluno com o tempo do padrão por tolerância percentual; se a diferença for ≤30% marque o tempo como correto (✅). Somente se a variação for >30% marque o tempo como incorreto (❌). É proibido marcar tempo como erro apenas por ser numericamente diferente.
-- O padrão do professor NUNCA recebe ❌; ele é sempre 100% ✅. ❌❌ só pode ocorrer quando o passo está errado E o tempo está fora da tolerância.
-- Sempre descarte o último dado da sequência antes da avaliação.
-
-Formato de Resposta em Caso Positivo:
-1. Parabéns, Você acertou.
-1.1 Inserir o padrão correto do professor e o do aluno com ✅ em cada passo certo com cada valor/tempo.
-2. Linha em branco.
-3. Número de vezes que o padrão apareceu completo (em algarismos, ex.: “2”, “3”).
-4. Não incluir mais nada (sem texto extra, sem tabela).
-
-Formato de Resposta em Caso Negativo:
-1. Primeiro token: não, você errou. Mas vamos entender o experimento.
-2. Linha em branco.
-3. Quantas vezes o padrão apareceu completo.
-4. Linha em branco.
-5. Tabela Markdown com cabeçalho exato:
-| Padrão do professor até o erro | Sequência do aluno até o erro | Valor incorreto |
-   • Cada linha deve conter valor/tempo do padrão (todos com ✅) até o ponto de falha (inclusive) e, ao lado, a sequência do aluno com ✅ ✅ se passo e tempo corretos ou ❌❌ se passo ou tempo estiver fora da tolerância. O professor nunca recebe ❌. Nenhuma linha pode ser omitida; a tabela deve ficar alinhada.
-6. Após a tabela, linha em branco e, para cada linha, explicação do “Valor incorreto”:
-   • Decodificar em bits (tamanho da lista de I/Os) e mostrar o binário.
-   • Comparação estrita “acionamentos esperados vs. ocorridos”: listar apenas os I/Os que diferiram, no formato “nome_do_IO: estado esperado → estado ocorrido (ligado/desligado)”.
-   • Se houve erro por tempo, indicar abaixo o passo e o tempo com ❌.
-7. Não incluir qualquer outro texto fora do especificado (sem introduções, conclusões ou resumos).
-
-Especificação do Formato de Saída (obrigatório):
-1. Linha 1: sim ou não.
-2. Linha 2: em branco.
-3. Linha 3: número de ocorrências completas.
-4. Se “sim”: terminar aqui.
-5. Se “não”: seguir exatamente os passos do caso negativo acima.
-6. Usar ✅ para cada valor correto antes do erro e ❌ exatamente no valor divergente.
-
-Dados para análise (use exatamente):
-Padrão: {pattern_serialized}
-Sequência: {sequence_serialized}
-IOs: {io_serialized}
-"""
-
-    try:
-        result = agent.invoke({"messages": [HumanMessage(content=human_prompt)]})
-        reply = _last_ai_message(result["messages"])
-    except httpx.HTTPError as exc:
-        flash(f"Erro ao acessar a API: {exc}", "error")
-        return redirect(url_for("collected_data"))
-    except Exception as exc:
-        flash(f"Erro ao executar a correção automática: {exc}", "error")
-        return redirect(url_for("collected_data"))
-
-    rows = dao.list_collected_data()
-    experiments = dao.list_full_plant_configs()
-    return render_template(
-        "collected_data/index.html",
-        title="Dados coletados",
-        rows=rows,
-        experiments=experiments,
-        correction_result=reply,
-        correction_error=None,
-    )
-
-
-app.register_blueprint(api)
-
-if __name__ == "__main__":
-    app.run(debug=True, threaded=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-
-
 def _json_payload():
     data = request.get_json(silent=True)
     if data is None:
@@ -1005,3 +1112,18 @@ def _require_fields(payload: Dict[str, Any], required_fields: List[str]) -> None
     missing = [field for field in required_fields if field not in payload or payload[field] in (None, "")]
     if missing:
         abort(400, description=f"Campos obrigatórios ausentes: {', '.join(missing)}")
+
+
+@api.delete("/ground-truth/<int:pattern_id>")
+def api_delete_ground_truth(pattern_id: int):
+    dao = _get_dao()
+    removed = dao.delete_ground_truth_pattern(pattern_id)
+    if not removed:
+        abort(404, description="Padrão não encontrado.")
+    return jsonify({"deleted": True})
+
+
+app.register_blueprint(api)
+
+if __name__ == "__main__":
+    app.run(debug=True, threaded=True, host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
