@@ -1,63 +1,54 @@
 # Remote Laboratory - PLC Data Acquisition System
 
-## Overview
-
-> ⚠️ **UFG TCC adaptation:** This repository extends the public work available at [github.com/RodSalg/remote-laboratory](https://github.com/RodSalg/remote-laboratory).  
-> The entire codebase, folder naming and original scripts remain credited to the authors of that project; the changes documented here are exclusive to the capstone requirements at Universidade Federal de Goiás (UFG).
-
----
-
-## Adaptations for the TCC project
-
-- `lab-manager/readfiles.py`: CLI helper that scans every `.csv` located in the project root and prints each file as a formatted text table (normalizes column sizes, pads spacing, and keeps headers aligned). Run `python lab-manager/readfiles.py` to inspect collected datasets directly from the terminal.
-
----
-
 ## Remote Laboratory
 
-The **Remote Laboratory** project provides a robust and automated system for **collecting**, **saving**, and **organizing** data from a Siemens PLC via the Snap7 communication protocol.  
-The collected data is processed in real time, stored both in text/CSV files, and inserted into a structured **MySQL database** for further analysis.
+The **Remote Laboratory** project provides a system for **collecting**, **storing**, and **managing** Siemens PLC signals through Snap7.
 
-The system is designed to facilitate experiments in mechatronics and automation laboratories, especially for pattern detection based on pulse trains.
+Data is recorded in files (`.txt`/`.csv`) and in a database (MySQL or SQLite), with support for:
 
-This fork customizes configuration, documentation and helper scripts for the UFG capstone without altering the original ownership of the core solution.
+- Plant/experiment management
+- Professor pattern (ground truth) management
+- Automatic correction by comparing collected sequences with expected patterns
+- Chatbot assistance (terminal and web)
 
 ---
 
 ## Features
 
-- 🛠️ Real-time communication with Siemens PLC (S7 family) using **Snap7**.
-- 💄 Local storage of pulse trains in **.txt** and **.csv** formats.
-- 🧑‍🧬 Automated calculation of **pulse train steps**.
-- 🏛️ Insertions and retrievals from a **MySQL database** (`cae_dr` schema).
-- 📈 Support for experiment tracking and pulse pattern management.
-- 🧹 Automatic versioning of exported files (avoiding data overwriting).
-- 🧹 Easy integration with future modules (e.g., machine learning, pattern recognition).
+- Communication with Siemens PLCs (S7 family) via Snap7.
+- State-change collection with `.txt` and `.csv` output.
+- Persistence in `dadoscoletados2` and `dadoscoletados_summary`.
+- Configurable database backend (`mysql` or `sqlite`).
+- Flask UI for experiment and ground truth management.
+- REST API for external integrations.
+- LangChain chatbot integrated with the local API.
+- Automatic sequence correction with didactic formatted output.
 
 ---
 
 ## Project Structure
 
-```
+```text
 REMOTE-LABORATORY/
-├── __pycache__/              # Python cache files (ignored)
-├── data/                     # Generated text and CSV files
-├── database-scripts/         # SQL scripts (CREATE statements) for database structure
-│    ├── cae_dr_dadoscoletados2.sql
-│    ├── patterns_from_professor.sql
-│    └── summary_pulse_values.sql
+├── collecting_profinet.py              # Main Profinet collector
+├── remote-laboratory.py                # Process orchestrator
+├── requirements.txt
 ├── src/
-│    └── db_dao.py             # Database access object (RemoteLaboratoryDAO)
-├── lab-manager/              # Flask UI + REST API for experiment/pattern management
-│    ├── main.py
-│    ├── templates/
-│    └── readfiles.py
-├── collecting_data_opcua_old.py  # [legacy] Script for OPC UA communication
-├── collecting_profinet.py        # [legacy] Script for Profinet communication
-├── insert_pulse_train_on_database.py  # Utility to insert custom pulse trains
-├── LICENSE
-├── README.md                  # Project documentation (this file)
-├── .gitignore                 # Files and folders excluded from Git
+│   └── db_dao.py                       # Database access (MySQL/SQLite)
+├── lab-manager/
+│   ├── main.py                         # Flask app (UI + API)
+│   ├── readfiles.py                    # CSV reading utility
+│   └── templates/
+├── chatbot/
+│   ├── main.py
+│   ├── tools.py
+│   └── settings.py
+├── collector/
+│   └── collecting_data_opcua_old.py    # Legacy OPC UA script
+├── data/
+│   ├── database-scripts/
+│   └── remote_lab.sqlite3
+└── collected-data/
 ```
 
 ---
@@ -65,10 +56,8 @@ REMOTE-LABORATORY/
 ## Requirements
 
 - Python 3.9+
-- SQLite 3 (já incluso no Python) **ou** um servidor MySQL 8.0+
-- Python libraries:
-  - `snap7`
-  - `mysql-connector-python` (somente necessário quando `DB_BACKEND=mysql`)
+- SQLite 3 (bundled with Python) **or** MySQL 8+
+- Python dependencies listed in `requirements.txt`
 
 Install dependencies with:
 
@@ -78,152 +67,169 @@ pip install -r requirements.txt
 
 ---
 
-## How It Works
+## Configuration
 
-1. The system **connects to a PLC** using the IP, rack, and slot configurations.
-2. It **reads a byte** from a specified DB block and **interprets it bit-by-bit**.
-3. Whenever a change is detected, it:
-   - Converts the bit array into an **integer step**.
-   - Saves the data into a `.txt` and `.csv` file.
-   - Inserts the step and timestamp into the database.
-4. After collection ends, the **pulse train** is automatically **saved into a summary table** for future analysis.
-
----
-
-## Usage
-
-### Run the main script
+Main environment variables:
 
 ```bash
-python collecting_profinet.py
-```
-
-> (You can adapt this command if using another acquisition script.)
-
----
-
-### Configuration
-
-Inside the code (`collecting_profinet.py`), you can modify:
-
-- `plc_ip` → PLC IP address (e.g., `"192.168.0.10"`)
-- `rack`, `slot` → PLC hardware configuration
-- `db_number`, `byte_index` → Memory address to read
-- `timeout` → Experiment duration (in seconds)
-
----
-
-### Database Schema
-
-You need to run the SQL scripts inside the `database-scripts/` folder to create the necessary tables:
-
-- `dadoscoletados2`: stores individual pulse data
-- `dadoscoletados_summary`: stores full pulse train patterns
-- `ground_truth_patterns`: referência dos padrões do professor para cada experimento (alimentados pela nova UI de gerenciamento)
-
----
-
-### Database backend selection
-
-`RemoteLaboratoryDAO` agora aceita tanto **MySQL** quanto **SQLite**. A escolha é feita através da variável de ambiente `DB_BACKEND`:
-
-```bash
-# MySQL (padrão)
+# Database (default: mysql)
 export DB_BACKEND=mysql
 export MYSQL_HOST=localhost
 export MYSQL_DATABASE=cae_dr
 export MYSQL_USER=root
 export MYSQL_PASSWORD=secret
 
-# ou SQLite
+# or SQLite
 export DB_BACKEND=sqlite
-export SQLITE_DB_PATH=/abs/path/para/remote_lab.sqlite3
+export SQLITE_DB_PATH=data/remote_lab.sqlite3
+
+# Flask / AI
+export FLASK_SECRET_KEY=dev
+export OPENAI_API_KEY="your-key"
+# optional
+export AI_KEY_SECRET="secret-for-encryption"
+export CHATBOT_API_BASE="http://localhost:5000/api"
+export CHATBOT_MODEL="gpt-4o-mini"
 ```
 
-- Quando `DB_BACKEND=mysql` (valor padrão) nada muda em relação ao comportamento antigo; você só precisa garantir que o `mysql-connector-python` está instalado e que o banco `cae_dr` exista.
-- Quando `DB_BACKEND=sqlite`, o arquivo informado em `SQLITE_DB_PATH` é criado automaticamente (padrão: `data/remote_lab.sqlite3`) e todas as consultas passam a usar o driver embutido `sqlite3`.
-- Certifique-se de apontar `SQLITE_DB_PATH` para um local com permissão de escrita. Se for um caminho inválido, o DAO volta automaticamente para `data/remote_lab.sqlite3`.
+---
 
-Essa configuração vale automaticamente para toda a aplicação Flask (`lab-manager/main.py`) e para os scripts que utilizam `RemoteLaboratoryDAO`.
+## How It Works
+
+1. The collector connects to the PLC using the plant IP/rack/slot configuration.
+2. It reads the configured DB byte and interprets the monitored bits.
+3. It detects state changes and records step, value, and timestamp.
+4. It persists the data to files and database.
+5. It consolidates the experiment pulse train in `dadoscoletados_summary`.
 
 ---
 
-### Web managers (Flask)
+## Usage
 
-- **Gerenciador de Experimentos** – disponível em `http://localhost:5000/` – lista/cria/edita/exclui registros da tabela `plant_config`.
-- **Gerenciador de Padrões do Professor** – disponível em `http://localhost:5000/ground-truth` – manipula os dados de `ground_truth_patterns`, permitindo cadastrar os padrões vindos do script `patterns_from_professor.sql` diretamente da interface web.
+### Option 1: helper runner (recommended)
 
-Ambos os módulos compartilham o mesmo backend (MySQL ou SQLite), então qualquer alteração via UI é automaticamente refletida no banco correspondente.
+```bash
+python remote-laboratory.py
+```
+
+Flags:
+
+```bash
+python remote-laboratory.py --collector
+python remote-laboratory.py --terminal-chatbot
+```
+
+### Option 2: run modules separately
+
+```bash
+python lab-manager/main.py
+python collecting_profinet.py
+python -m chatbot.main
+```
 
 ---
 
-### REST API
+## Web Managers (Flask)
 
-O mesmo aplicativo (`lab-manager/main.py`) expõe um blueprint JSON em `http://localhost:5000/api`. Principais rotas:
+With Flask running at `http://localhost:5000`:
 
-- `GET /api/experiments` / `POST /api/experiments` / `GET|PUT|DELETE /api/experiments/<id>` para listar, criar e administrar entradas em `plant_config`.
-- `GET /api/ground-truth` / `POST /api/ground-truth` / `GET|PUT|DELETE /api/ground-truth/<id>` para gerenciar `ground_truth_patterns`.
+- `/` - Experiment Manager (`plant_config`)
+- `/ground-truth` - Professor Pattern Manager
+- `/dados-coletados` - Collected data listing/import + automatic correction
+- `/chatbot` - Web chatbot
+- `/settings/ai-key` - AI key settings
 
-As rotas executam validações básicas e retornam códigos HTTP apropriados, facilitando a integração com chatbots ou qualquer outro cliente.
+---
+
+## REST API
+
+Base URL: `http://localhost:5000/api`
+
+Experiments:
+
+- `POST /api/experiments`
+- `GET /api/experiments/<id>`
+- `PUT /api/experiments/<id>`
+- `DELETE /api/experiments/<id>`
+
+Ground truth:
+
+- `GET /api/ground-truth`
+- `POST /api/ground-truth`
+- `GET /api/ground-truth/<id>`
+- `PUT /api/ground-truth/<id>`
+- `DELETE /api/ground-truth/<id>`
 
 ---
 
 ## Notes
 
-- The generated `.txt` and `.csv` files are saved with automatic **version control** (`v1`, `v2`, etc.).
-- The database connection parameters (host, database, user, password) are configured inside the `RemoteLaboratoryDAO` class.
-- This project is modular and ready for expansion (for example: adding OPC UA or Profinet acquisitions).
+- The collector creates output files inside a date-based folder in the current directory.
+- `RemoteLaboratoryDAO` falls back to SQLite at `data/remote_lab.sqlite3` when needed.
+- `collector/collecting_data_opcua_old.py` is legacy and not part of the main current flow.
 
 ---
 
 ## Credits & Attribution
 
-- Original project: [Remote Laboratory – PLC Data Acquisition System](https://github.com/RodSalg/remote-laboratory) (rod-salgado and collaborators).  
-- UFG capstone adjustments: documentation notes, utility scripts and data structures tailored to the academic context.
+- Original project: [Remote Laboratory – PLC Data Acquisition System](https://github.com/RodSalg/remote-laboratory)
+- UFG capstone/team: Rodrigo Ferraz Azevedo, Guido Machado, Marcelo Marcomini
+- Code by Rodrigo Ferraz Azevedo.
 
 ---
 
-## Team
+## Changelog
 
-- Rodrigo Ferraz Azevedo  
-- Guido Machado  
-- Marcelo Marcomini
+> Versioning created from commit history to simplify future maintenance.
 
----
+### v0.6.0 (2026-02-02)
 
-## Chatbot (LangChain)
+- Automatic correction migrated to a deterministic Python flow.
+- REST API routes restored/normalized.
+- `human_prompt` refined for PLC auto-correction output format (2026-01-31).
 
-O diretório `chatbot/` contém um protótipo de agente que utiliza LangChain + GPT para conversar com os endpoints REST do `lab-manager`. Tudo que precisa está descrito aqui, para manter a documentação centralizada:
+### v0.5.0 (2025-12-18)
 
-- **Pré-requisitos**
-  - Python 3.9+
-  - Servidor Flask/API ativo: `python lab-manager/main.py`
-  - Dependências instaladas: `pip install -r requirements.txt`
-  - Variáveis de ambiente:
-    - `OPENAI_API_KEY` (obrigatória; exporte no terminal ou adicione em `~/.zshrc`)
-    - `CHATBOT_API_BASE` (opcional, padrão `http://localhost:5000/api`)
+- Added total time to automatic correction output.
+- Added floating chatbot drawer across all pages with page context awareness.
+- Refined auto-correction prompt and chatbot tools structure.
+- Added processing feedback in the auto-correction form.
+- Improved chatbot with professor-style guidance and starter prompts.
+- Added media assets to README.
 
-- **Execução**
-  1. Ative seu virtualenv e exporte a chave: `export OPENAI_API_KEY="sua-chave"`. (Opcional: `export CHATBOT_API_BASE="http://localhost:5000/api"` se quiser outro host.)
-  2. Com o Flask rodando, execute `python -m chatbot.main` (ou prefixe em uma única linha: `OPENAI_API_KEY="sua-chave" python -m chatbot.main`).
-  3. No prompt interativo, faça perguntas do tipo “listar experimentos”, “criar experimento test” ou “listar padrões do professor”. O agente decide quando chamar as ferramentas definidas em `chatbot/tools.py`.
-  4. Encerre com `Ctrl+C` ou `Ctrl+D`.
+### v0.4.0 (2025-12-01)
 
-- **Arquivos principais**
-  - `chatbot/main.py`: configura o LLM (`ChatOpenAI`) e o agente LangChain.
-  - `chatbot/tools.py`: cliente HTTP com as funções `list_experiments`, `create_ground_truth` etc.
-  - `chatbot/settings.py`: leitura de variáveis de ambiente e configurações padrão.
+- Standardized app port to `5000`.
+- Added `.env` loading for AI key.
+- Integrated web chatbot into `lab-manager`.
+- Renamed Flask entrypoint and added helper runner script.
+- Added encrypted AI key storage.
+- Updated chatbot to LangChain 1.0 APIs.
+- Added chatbot API availability warning and improved key setup documentation.
 
-Adapte conforme necessário (logs, autenticação, UI própria). O objetivo é servir de base para integrar um chatbot aos dados do laboratório remoto.
+### v0.3.0 (2025-11-27)
 
----
+- Added CSV utility (`lab-manager/readfiles.py`) and updated base documentation.
+- Added plant configuration CRUD in web UI + CSV import.
+- Added SQLite backend support, including collected-data schema.
+- Reorganized project tree and consolidated `lab-manager`.
+- Added REST API for experiments and ground truth with endpoint documentation.
+- Added LangChain chatbot prototype.
+- Added collected-data listing in the web interface.
+- Added professor-pattern import with experiment selection and CSV steps support.
+- Added automatic correction flow comparing collected data with professor patterns.
+- Centralized documentation/dependencies and updated `requirements.txt`.
 
-## .gitignore
+### v0.2.0 (2025-07-07)
 
-All unnecessary files (such as cache, virtual environments, local settings, etc.) are already excluded from Git tracking.
+- Evolved OPC UA/Profinet acquisition scripts.
+- Updated folder organization and README.
+- Switched to using the latest experiment ID instead of a fixed value.
+- Cleaned old data and added new datasets.
+- Added plant switching menu with automatic configuration (`get_plant_config`/`list_plant_configs`).
+- Refactored SQL scripts and added groundwork for `ground_truth_patterns`.
+- Adjusted experiment execution time limit.
 
----
+### v0.1.0 (2025-03-19)
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+- Initial project commit on GitHub.
